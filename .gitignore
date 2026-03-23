@@ -1,0 +1,18 @@
+.idea/
+catex-jc.iml
+*.ipr
+*.iml
+*.iws
+*.iml
+.gradle
+build/
+.idea/libraries/Gradle__*
+*.*~
+.DS_Store
+tmp/
+out/
+#JENV local file
+.java-version
+.run/
+.vscode/
+

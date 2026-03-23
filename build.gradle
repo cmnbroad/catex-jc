@@ -1,0 +1,23 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'com.catex'
+version = '0.1.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.testng:testng:7.9.0'
+}
+
+test {
+    useTestNG()
+}

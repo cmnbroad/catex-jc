@@ -1,0 +1,73 @@
+package com.catex.render;
+
+import com.catex.hasse.HasseDiagram;
+import com.catex.hasse.HasseDiagramConverter;
+import com.catex.lattice.Lattice;
+import com.catex.render.internal.LayeredLayout;
+import com.catex.render.internal.Point;
+import com.catex.render.internal.SvgCanvas;
+
+import java.util.Map;
+import java.util.Optional;
+
+/**
+ * Renders a {@link Lattice} to SVG.
+ *
+ * <p>Uses the same layered layout as {@link HasseDiagramRenderer} but
+ * additionally highlights the top element (⊤) and bottom element (⊥) with
+ * distinct colours from {@link RenderOptions#topColor} and
+ * {@link RenderOptions#bottomColor}.
+ *
+ * @param <E> element type
+ */
+public final class LatticeRenderer<E> implements Renderer<Lattice<E>> {
+
+    @Override
+    public String renderSvg(Lattice<E> lattice, RenderOptions opts) {
+        HasseDiagram<E> diagram = HasseDiagramConverter.fromLattice(lattice);
+        SvgCanvas canvas = new SvgCanvas(opts.width, opts.height, "#FAFAFA");
+
+        Map<E, Point> pos = LayeredLayout.layout(diagram, opts);
+
+        Optional<E> top    = lattice.top();
+        Optional<E> bottom = lattice.bottom();
+
+        // Cover edges
+        for (HasseDiagram.Cover<E> cover : diagram.getCovers()) {
+            Point src  = pos.get(cover.lower());
+            Point tgt  = pos.get(cover.upper());
+            Point from = src.edgeToward(tgt, opts.nodeRadius + 2);
+            Point to   = tgt.edgeToward(src, opts.nodeRadius + 2);
+            canvas.line(from.x(), from.y(), to.x(), to.y(),
+                        opts.edgeColor, opts.edgeStrokeWidth, null);
+        }
+
+        // Nodes
+        for (E node : diagram.getNodes()) {
+            Point p = pos.get(node);
+            String fill = opts.nodeColor;
+            if (top.isPresent()    && top.get().equals(node))    fill = opts.topColor;
+            if (bottom.isPresent() && bottom.get().equals(node)) fill = opts.bottomColor;
+
+            canvas.circle(p.x(), p.y(), opts.nodeRadius,
+                          fill, opts.nodeStroke, opts.nodeStrokeWidth);
+            canvas.text(p.x(), p.y(), node.toString(),
+                        opts.fontSize, "middle", opts.labelColor);
+        }
+
+        // Legend for top / bottom
+        double lx = opts.width - opts.margin + 5;
+        double ly = opts.margin;
+        if (top.isPresent()) {
+            canvas.circle(lx, ly, 8, opts.topColor, opts.nodeStroke, 1.5);
+            canvas.text(lx + 14, ly, "⊤ " + top.get(), opts.fontSize - 1, "start", "#333");
+            ly += 22;
+        }
+        if (bottom.isPresent()) {
+            canvas.circle(lx, ly, 8, opts.bottomColor, opts.nodeStroke, 1.5);
+            canvas.text(lx + 14, ly, "⊥ " + bottom.get(), opts.fontSize - 1, "start", "#333");
+        }
+
+        return canvas.build();
+    }
+}
