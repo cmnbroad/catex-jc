@@ -35,13 +35,13 @@ public final class LatticeConverter {
      * @throws IllegalArgumentException if the poset is not a lattice
      */
     public static <E> Lattice<E> fromPoset(PartialOrder<E> poset) {
-        List<E> elems = new ArrayList<>(poset.getElements());
-        Map<Lattice.Pair<E>, E> joinTable = new LinkedHashMap<>();
-        Map<Lattice.Pair<E>, E> meetTable = new LinkedHashMap<>();
+        final List<E> elems = new ArrayList<>(poset.getElements());
+        final Map<Lattice.Pair<E>, E> joinTable = new LinkedHashMap<>();
+        final Map<Lattice.Pair<E>, E> meetTable = new LinkedHashMap<>();
 
         for (E a : elems) {
             for (E b : elems) {
-                Lattice.Pair<E> key = new Lattice.Pair<>(a, b);
+                final Lattice.Pair<E> key = new Lattice.Pair<>(a, b);
                 joinTable.put(key, computeJoin(a, b, poset));
                 meetTable.put(key, computeMeet(a, b, poset));
             }
@@ -79,13 +79,14 @@ public final class LatticeConverter {
     /** Least upper bound of a and b, or throws if none exists. */
     private static <E> E computeJoin(E a, E b, PartialOrder<E> poset) {
         // Upper bounds of both a and b
-        Set<E> upperA = poset.upperSet(a);
-        Set<E> upperB = poset.upperSet(b);
-        Set<E> common = new LinkedHashSet<>(upperA);
+        final Set<E> upperA = poset.upperSet(a);
+        final Set<E> upperB = poset.upperSet(b);
+        final Set<E> common = new LinkedHashSet<>(upperA);
         common.retainAll(upperB);
 
-        if (common.isEmpty())
+        if (common.isEmpty()) {
             throw new IllegalArgumentException("No upper bound for " + a + " and " + b);
+        }
 
         // Least among the common upper bounds
         for (E candidate : common) {
@@ -96,20 +97,23 @@ public final class LatticeConverter {
                     break;
                 }
             }
-            if (least) return candidate;
+            if (least) {
+                return candidate;
+            }
         }
         throw new IllegalArgumentException("No least upper bound for " + a + " and " + b);
     }
 
     /** Greatest lower bound of a and b, or throws if none exists. */
     private static <E> E computeMeet(E a, E b, PartialOrder<E> poset) {
-        Set<E> lowerA = poset.lowerSet(a);
-        Set<E> lowerB = poset.lowerSet(b);
-        Set<E> common = new LinkedHashSet<>(lowerA);
+        final Set<E> lowerA = poset.lowerSet(a);
+        final Set<E> lowerB = poset.lowerSet(b);
+        final Set<E> common = new LinkedHashSet<>(lowerA);
         common.retainAll(lowerB);
 
-        if (common.isEmpty())
+        if (common.isEmpty()) {
             throw new IllegalArgumentException("No lower bound for " + a + " and " + b);
+        }
 
         for (E candidate : common) {
             boolean greatest = true;
@@ -119,7 +123,9 @@ public final class LatticeConverter {
                     break;
                 }
             }
-            if (greatest) return candidate;
+            if (greatest) {
+                return candidate;
+            }
         }
         throw new IllegalArgumentException("No greatest lower bound for " + a + " and " + b);
     }

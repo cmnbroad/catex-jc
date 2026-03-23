@@ -50,9 +50,12 @@ public final class FiniteCategory<OL, ML> {
      * Returns all morphisms whose domain equals the given object.
      */
     public Set<Morphism<ML, OL>> morphismsFrom(CategoryObject<OL> source) {
-        Set<Morphism<ML, OL>> result = new LinkedHashSet<>();
-        for (Morphism<ML, OL> m : morphisms)
-            if (m.getDomain().equals(source)) result.add(m);
+        final Set<Morphism<ML, OL>> result = new LinkedHashSet<>();
+        for (Morphism<ML, OL> m : morphisms) {
+            if (m.getDomain().equals(source)) {
+                result.add(m);
+            }
+        }
         return Collections.unmodifiableSet(result);
     }
 
@@ -60,9 +63,12 @@ public final class FiniteCategory<OL, ML> {
      * Returns all morphisms whose codomain equals the given object.
      */
     public Set<Morphism<ML, OL>> morphismsTo(CategoryObject<OL> target) {
-        Set<Morphism<ML, OL>> result = new LinkedHashSet<>();
-        for (Morphism<ML, OL> m : morphisms)
-            if (m.getCodomain().equals(target)) result.add(m);
+        final Set<Morphism<ML, OL>> result = new LinkedHashSet<>();
+        for (Morphism<ML, OL> m : morphisms) {
+            if (m.getCodomain().equals(target)) {
+                result.add(m);
+            }
+        }
         return Collections.unmodifiableSet(result);
     }
 
@@ -93,7 +99,7 @@ public final class FiniteCategory<OL, ML> {
      * an empty list means the category is well-formed.
      */
     public List<String> validate() {
-        List<String> errors = new ArrayList<>();
+        final List<String> errors = new ArrayList<>();
 
         // 1. Every object must have an identity morphism
         for (CategoryObject<OL> obj : objects) {
@@ -103,16 +109,18 @@ public final class FiniteCategory<OL, ML> {
         }
 
         // Build a label→morphism lookup for composition checks
-        Map<ML, Morphism<ML, OL>> byLabel = new LinkedHashMap<>();
-        for (Morphism<ML, OL> m : morphisms) byLabel.put(m.getLabel(), m);
+        final Map<ML, Morphism<ML, OL>> byLabel = new LinkedHashMap<>();
+        for (Morphism<ML, OL> m : morphisms) {
+            byLabel.put(m.getLabel(), m);
+        }
 
         // 2. Unit laws and composition type-checking
         for (Map.Entry<CompositionKey<ML>, Morphism<ML, OL>> entry : compositionTable.entrySet()) {
-            ML gLabel = entry.getKey().first();
-            ML fLabel = entry.getKey().second();
-            Morphism<ML, OL> composite = entry.getValue();
-            Morphism<ML, OL> g = byLabel.get(gLabel);
-            Morphism<ML, OL> f = byLabel.get(fLabel);
+            final ML gLabel = entry.getKey().first();
+            final ML fLabel = entry.getKey().second();
+            final Morphism<ML, OL> composite = entry.getValue();
+            final Morphism<ML, OL> g = byLabel.get(gLabel);
+            final Morphism<ML, OL> f = byLabel.get(fLabel);
 
             if (g == null || f == null) {
                 errors.add("Composition references unknown morphism(s): " + gLabel + ", " + fLabel);

@@ -38,16 +38,17 @@ public final class HasseDiagram<E> {
         this.rankMap = Collections.unmodifiableMap(new LinkedHashMap<>(rankMap));
 
         int max = 0;
-        Map<Integer, List<E>> layersMut = new LinkedHashMap<>();
+        final Map<Integer, List<E>> layersMut = new LinkedHashMap<>();
         for (Map.Entry<E, Integer> e : rankMap.entrySet()) {
-            int r = e.getValue();
+            final int r = e.getValue();
             max = Math.max(max, r);
             layersMut.computeIfAbsent(r, k -> new ArrayList<>()).add(e.getKey());
         }
         this.maxRank = max;
-        Map<Integer, List<E>> layersImmutable = new LinkedHashMap<>();
-        for (var entry : layersMut.entrySet())
+        final Map<Integer, List<E>> layersImmutable = new LinkedHashMap<>();
+        for (var entry : layersMut.entrySet()) {
             layersImmutable.put(entry.getKey(), Collections.unmodifiableList(entry.getValue()));
+        }
         this.layers = Collections.unmodifiableMap(layersImmutable);
     }
 
@@ -61,8 +62,10 @@ public final class HasseDiagram<E> {
 
     /** The rank (layer index, 0 = bottom) of the given node. */
     public int rank(E node) {
-        Integer r = rankMap.get(node);
-        if (r == null) throw new NoSuchElementException("Node not in diagram: " + node);
+        final Integer r = rankMap.get(node);
+        if (r == null) {
+            throw new NoSuchElementException("Node not in diagram: " + node);
+        }
         return r;
     }
 
@@ -76,22 +79,32 @@ public final class HasseDiagram<E> {
 
     /** All nodes ordered bottom-to-top, layer by layer. */
     public List<E> nodesByRank() {
-        List<E> result = new ArrayList<>(nodes.size());
-        for (int r = 0; r <= maxRank; r++) result.addAll(layer(r));
+        final List<E> result = new ArrayList<>(nodes.size());
+        for (int r = 0; r <= maxRank; r++) {
+            result.addAll(layer(r));
+        }
         return result;
     }
 
     /** Cover edges whose {@code lower} node is {@code node} (edges going up from node). */
     public List<Cover<E>> coversAbove(E node) {
-        List<Cover<E>> result = new ArrayList<>();
-        for (Cover<E> c : covers) if (c.lower().equals(node)) result.add(c);
+        final List<Cover<E>> result = new ArrayList<>();
+        for (Cover<E> c : covers) {
+            if (c.lower().equals(node)) {
+                result.add(c);
+            }
+        }
         return result;
     }
 
     /** Cover edges whose {@code upper} node is {@code node} (edges coming into node from below). */
     public List<Cover<E>> coversBelow(E node) {
-        List<Cover<E>> result = new ArrayList<>();
-        for (Cover<E> c : covers) if (c.upper().equals(node)) result.add(c);
+        final List<Cover<E>> result = new ArrayList<>();
+        for (Cover<E> c : covers) {
+            if (c.upper().equals(node)) {
+                result.add(c);
+            }
+        }
         return result;
     }
 

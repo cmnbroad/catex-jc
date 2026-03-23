@@ -7,6 +7,9 @@ import com.catex.render.internal.LayeredLayout;
 import com.catex.render.internal.Point;
 import com.catex.render.internal.SvgCanvas;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -34,20 +37,22 @@ public final class CategoryRenderer<OL, ML> implements Renderer<FiniteCategory<O
                              RenderOptions opts,
                              boolean showIdentities) {
 
-        String markerId = "arrow";
-        SvgCanvas canvas = new SvgCanvas(opts.width, opts.height, "#FAFAFA");
+        final String markerId = "arrow";
+        final SvgCanvas canvas = new SvgCanvas(opts.width, opts.height, "#FAFAFA");
         canvas.addArrowMarker(markerId, opts.edgeColor, opts.arrowSize);
 
-        Map<OL, Point> pos = computeLayout(category, opts);
+        final Map<OL, Point> pos = computeLayout(category, opts);
 
         // Morphisms (drawn before objects)
         for (Morphism<ML, OL> m : category.getMorphisms()) {
-            OL srcLabel = m.getDomain().getLabel();
-            OL tgtLabel = m.getCodomain().getLabel();
+            final OL srcLabel = m.getDomain().getLabel();
+            final OL tgtLabel = m.getCodomain().getLabel();
 
             if (m.isIdentity()) {
-                if (!showIdentities) continue;
-                Point p = pos.get(srcLabel);
+                if (!showIdentities) {
+                    continue;
+                }
+                final Point p = pos.get(srcLabel);
                 canvas.selfLoop(p.x(), p.y(), opts.nodeRadius,
                                 opts.edgeColor, opts.edgeStrokeWidth, markerId);
                 canvas.text(p.x(), p.y() - opts.nodeRadius * 2.8,
@@ -55,18 +60,18 @@ public final class CategoryRenderer<OL, ML> implements Renderer<FiniteCategory<O
                 continue;
             }
 
-            Point srcPt = pos.get(srcLabel);
-            Point tgtPt = pos.get(tgtLabel);
+            final Point srcPt = pos.get(srcLabel);
+            final Point tgtPt = pos.get(tgtLabel);
 
             // Detect parallel morphisms in the opposite direction → curve them
-            boolean hasReverse = category.getMorphisms().stream()
+            final boolean hasReverse = category.getMorphisms().stream()
                     .anyMatch(n -> !n.isIdentity()
                             && n.getDomain().getLabel().equals(tgtLabel)
                             && n.getCodomain().getLabel().equals(srcLabel));
-            double curvature = hasReverse ? 28 : 0;
+            final double curvature = hasReverse ? 28 : 0;
 
-            Point from = srcPt.edgeToward(tgtPt, opts.nodeRadius + 2);
-            Point to   = tgtPt.edgeToward(srcPt, opts.nodeRadius + opts.arrowSize + 2);
+            final Point from = srcPt.edgeToward(tgtPt, opts.nodeRadius + 2);
+            final Point to   = tgtPt.edgeToward(srcPt, opts.nodeRadius + opts.arrowSize + 2);
 
             if (curvature == 0) {
                 canvas.line(from.x(), from.y(), to.x(), to.y(),
@@ -77,7 +82,7 @@ public final class CategoryRenderer<OL, ML> implements Renderer<FiniteCategory<O
                                   opts.edgeColor, opts.edgeStrokeWidth, markerId);
             }
 
-            Point perp = srcPt.perpendicular(tgtPt, 16 + curvature / 2);
+            final Point perp = srcPt.perpendicular(tgtPt, 16 + curvature / 2);
             canvas.edgeLabel(from.x(), from.y(), to.x(), to.y(),
                              perp.x(), perp.y(),
                              m.getLabel().toString(), opts.fontSize - 2, "#333");
@@ -85,8 +90,8 @@ public final class CategoryRenderer<OL, ML> implements Renderer<FiniteCategory<O
 
         // Objects
         for (var obj : category.getObjects()) {
-            OL label = obj.getLabel();
-            Point p  = pos.get(label);
+            final OL label = obj.getLabel();
+            final Point p  = pos.get(label);
             canvas.circle(p.x(), p.y(), opts.nodeRadius,
                           opts.nodeColor, opts.nodeStroke, opts.nodeStrokeWidth);
             canvas.text(p.x(), p.y(), label.toString(),
@@ -96,26 +101,48 @@ public final class CategoryRenderer<OL, ML> implements Renderer<FiniteCategory<O
         return canvas.build();
     }
 
+    /**
+     * Renders {@code category} to a file, including or excluding identity morphisms.
+     *
+     * @param category       the category to render
+     * @param opts           render options
+     * @param path           destination file path
+     * @param showIdentities if {@code false}, identity self-loops are omitted
+     * @throws IOException if the file cannot be written
+     */
+    public void renderSvgToFile(FiniteCategory<OL, ML> category,
+                                 RenderOptions opts,
+                                 Path path,
+                                 boolean showIdentities) throws IOException {
+        Files.writeString(path, renderSvg(category, opts, showIdentities));
+    }
+
     // -------------------------------------------------------------------------
 
     private Map<OL, Point> computeLayout(FiniteCategory<OL, ML> category, RenderOptions opts) {
-        Set<OL> labels = new LinkedHashSet<>();
-        for (var obj : category.getObjects()) labels.add(obj.getLabel());
+        final Set<OL> labels = new LinkedHashSet<>();
+        for (var obj : category.getObjects()) {
+            labels.add(obj.getLabel());
+        }
 
         // Build adjacency from non-identity morphisms
-        Map<OL, List<OL>> adj = new LinkedHashMap<>();
-        for (OL l : labels) adj.put(l, new ArrayList<>());
+        final Map<OL, List<OL>> adj = new LinkedHashMap<>();
+        for (OL l : labels) {
+            adj.put(l, new ArrayList<>());
+        }
         for (Morphism<ML, OL> m : category.getMorphisms()) {
-            if (!m.isIdentity())
+            if (!m.isIdentity()) {
                 adj.get(m.getDomain().getLabel()).add(m.getCodomain().getLabel());
+            }
         }
 
         try {
-            Map<OL, Integer> rankMap = LayeredLayout.computeRanks(labels, adj);
-            int maxRank = rankMap.values().stream().mapToInt(Integer::intValue).max().orElse(0);
-            Map<Integer, List<OL>> layers = new LinkedHashMap<>();
-            for (Map.Entry<OL, Integer> e : rankMap.entrySet())
+            final Map<OL, Integer> rankMap = LayeredLayout.computeRanks(labels, adj);
+            final int maxRank = rankMap.values().stream().mapToInt(Integer::intValue).max().orElse(0);
+            final Map<Integer, List<OL>> layers = new LinkedHashMap<>();
+            for (Map.Entry<OL, Integer> e : rankMap.entrySet()) {
                 layers.computeIfAbsent(e.getValue(), k -> new ArrayList<>()).add(e.getKey());
+            }
             return LayeredLayout.layoutRanks(rankMap, layers, maxRank, opts);
         } catch (IllegalArgumentException cyclic) {
             return CircularLayout.layout(labels, opts);

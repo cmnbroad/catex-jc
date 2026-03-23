@@ -20,19 +20,19 @@ public final class CircularLayout {
      * @param opts  render options (width, height, layoutRadius)
      */
     public static <V> Map<V, Point> layout(Collection<V> nodes, RenderOptions opts) {
-        Map<V, Point> positions = new LinkedHashMap<>();
-        List<V> list = new ArrayList<>(nodes);
-        int n = list.size();
+        final Map<V, Point> positions = new LinkedHashMap<>();
+        final List<V> list = new ArrayList<>(nodes);
+        final int n = list.size();
 
-        double cx = opts.width  / 2.0;
-        double cy = opts.height / 2.0;
-        double r  = Math.min(opts.layoutRadius,
+        final double cx = opts.width  / 2.0;
+        final double cy = opts.height / 2.0;
+        double r = Math.min(opts.layoutRadius,
                 Math.min(cx, cy) - opts.margin - opts.nodeRadius);
         r = Math.max(r, opts.nodeRadius * 2);
 
         for (int i = 0; i < n; i++) {
             // Start from the top (-π/2) and go clockwise
-            double angle = -Math.PI / 2 + 2 * Math.PI * i / n;
+            final double angle = -Math.PI / 2 + 2 * Math.PI * i / n;
             positions.put(list.get(i), new Point(cx + r * Math.cos(angle),
                                                   cy + r * Math.sin(angle)));
         }

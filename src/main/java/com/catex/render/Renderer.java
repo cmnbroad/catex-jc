@@ -1,7 +1,11 @@
 package com.catex.render;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 /**
- * Renders a structure {@code T} to an SVG string.
+ * Renders a structure {@code T} to an SVG string or persistent file.
  *
  * @param <T> the type of structure to render
  */
@@ -16,5 +20,29 @@ public interface Renderer<T> {
     /** Renders with {@link RenderOptions#defaults()}. */
     default String renderSvg(T structure) {
         return renderSvg(structure, RenderOptions.defaults());
+    }
+
+    /**
+     * Renders {@code structure} to a file at the given {@code path},
+     * creating or overwriting the file as needed.
+     *
+     * @param structure the structure to render
+     * @param options   render options
+     * @param path      destination file path
+     * @throws IOException if the file cannot be written
+     */
+    default void renderSvgToFile(T structure, RenderOptions options, Path path) throws IOException {
+        Files.writeString(path, renderSvg(structure, options));
+    }
+
+    /**
+     * Renders {@code structure} to a file using {@link RenderOptions#defaults()}.
+     *
+     * @param structure the structure to render
+     * @param path      destination file path
+     * @throws IOException if the file cannot be written
+     */
+    default void renderSvgToFile(T structure, Path path) throws IOException {
+        renderSvgToFile(structure, RenderOptions.defaults(), path);
     }
 }

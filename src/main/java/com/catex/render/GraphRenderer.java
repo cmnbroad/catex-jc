@@ -23,20 +23,20 @@ public final class GraphRenderer<V, E> implements Renderer<DirectedGraph<V, E>> 
 
     @Override
     public String renderSvg(DirectedGraph<V, E> graph, RenderOptions opts) {
-        String markerId = "arrow";
-        SvgCanvas canvas = new SvgCanvas(opts.width, opts.height, "#FAFAFA");
+        final String markerId = "arrow";
+        final SvgCanvas canvas = new SvgCanvas(opts.width, opts.height, "#FAFAFA");
         canvas.addArrowMarker(markerId, opts.edgeColor, opts.arrowSize);
 
-        Map<V, Point> pos = computeLayout(graph, opts);
+        final Map<V, Point> pos = computeLayout(graph, opts);
 
         // Edges (before nodes)
         for (DirectedGraph.Edge<V, E> edge : graph.getEdges()) {
-            V src = edge.source();
-            V tgt = edge.target();
+            final V src = edge.source();
+            final V tgt = edge.target();
 
             if (src.equals(tgt)) {
                 // Self-loop
-                Point p = pos.get(src);
+                final Point p = pos.get(src);
                 canvas.selfLoop(p.x(), p.y(), opts.nodeRadius,
                                 opts.edgeColor, opts.edgeStrokeWidth, markerId);
                 // Label above the loop
@@ -45,15 +45,15 @@ public final class GraphRenderer<V, E> implements Renderer<DirectedGraph<V, E>> 
                 continue;
             }
 
-            Point srcPt = pos.get(src);
-            Point tgtPt = pos.get(tgt);
+            final Point srcPt = pos.get(src);
+            final Point tgtPt = pos.get(tgt);
 
             // Check for a parallel reverse edge — if so, curve both
-            boolean hasReverse = graph.hasEdge(tgt, src);
-            double curvature = hasReverse ? 30 : 0;
+            final boolean hasReverse = graph.hasEdge(tgt, src);
+            final double curvature = hasReverse ? 30 : 0;
 
-            Point from = srcPt.edgeToward(tgtPt, opts.nodeRadius + 2);
-            Point to   = tgtPt.edgeToward(srcPt, opts.nodeRadius + opts.arrowSize + 2);
+            final Point from = srcPt.edgeToward(tgtPt, opts.nodeRadius + 2);
+            final Point to   = tgtPt.edgeToward(srcPt, opts.nodeRadius + opts.arrowSize + 2);
 
             if (curvature == 0) {
                 canvas.line(from.x(), from.y(), to.x(), to.y(),
@@ -65,7 +65,7 @@ public final class GraphRenderer<V, E> implements Renderer<DirectedGraph<V, E>> 
             }
 
             // Edge label: offset perpendicular to the edge direction
-            Point perp = srcPt.perpendicular(tgtPt, 16 + curvature / 2);
+            final Point perp = srcPt.perpendicular(tgtPt, 16 + curvature / 2);
             canvas.edgeLabel(from.x(), from.y(), to.x(), to.y(),
                              perp.x(), perp.y(),
                              edge.label().toString(), opts.fontSize - 2, "#333");
@@ -73,7 +73,7 @@ public final class GraphRenderer<V, E> implements Renderer<DirectedGraph<V, E>> 
 
         // Nodes
         for (V vertex : graph.getVertices()) {
-            Point p = pos.get(vertex);
+            final Point p = pos.get(vertex);
             canvas.circle(p.x(), p.y(), opts.nodeRadius,
                           opts.nodeColor, opts.nodeStroke, opts.nodeStrokeWidth);
             canvas.text(p.x(), p.y(), vertex.toString(),
@@ -87,19 +87,24 @@ public final class GraphRenderer<V, E> implements Renderer<DirectedGraph<V, E>> 
 
     private Map<V, Point> computeLayout(DirectedGraph<V, E> graph, RenderOptions opts) {
         // Build adjacency map
-        Map<V, List<V>> adj = new LinkedHashMap<>();
-        for (V v : graph.getVertices()) adj.put(v, new ArrayList<>());
-        for (DirectedGraph.Edge<V, E> e : graph.getEdges())
-            if (!e.source().equals(e.target())) // skip self-loops for layout
+        final Map<V, List<V>> adj = new LinkedHashMap<>();
+        for (V v : graph.getVertices()) {
+            adj.put(v, new ArrayList<>());
+        }
+        for (DirectedGraph.Edge<V, E> e : graph.getEdges()) {
+            if (!e.source().equals(e.target())) { // skip self-loops for layout
                 adj.get(e.source()).add(e.target());
+            }
+        }
 
         // Try layered layout (requires DAG)
         try {
-            Map<V, Integer> rankMap = LayeredLayout.computeRanks(graph.getVertices(), adj);
-            int maxRank = rankMap.values().stream().mapToInt(Integer::intValue).max().orElse(0);
-            Map<Integer, List<V>> layers = new LinkedHashMap<>();
-            for (Map.Entry<V, Integer> e : rankMap.entrySet())
+            final Map<V, Integer> rankMap = LayeredLayout.computeRanks(graph.getVertices(), adj);
+            final int maxRank = rankMap.values().stream().mapToInt(Integer::intValue).max().orElse(0);
+            final Map<Integer, List<V>> layers = new LinkedHashMap<>();
+            for (Map.Entry<V, Integer> e : rankMap.entrySet()) {
                 layers.computeIfAbsent(e.getValue(), k -> new ArrayList<>()).add(e.getKey());
+            }
             return LayeredLayout.layoutRanks(rankMap, layers, maxRank, opts);
         } catch (IllegalArgumentException cycleDetected) {
             // Fall back to circular layout

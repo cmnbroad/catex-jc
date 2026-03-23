@@ -39,8 +39,10 @@ public final class Lattice<E> {
      * @throws NoSuchElementException if the join is not defined (lattice is incomplete)
      */
     public E join(E a, E b) {
-        E result = joinTable.get(new Pair<>(a, b));
-        if (result == null) throw new NoSuchElementException("Join not defined for " + a + ", " + b);
+        final E result = joinTable.get(new Pair<>(a, b));
+        if (result == null) {
+            throw new NoSuchElementException("Join not defined for " + a + ", " + b);
+        }
         return result;
     }
 
@@ -50,8 +52,10 @@ public final class Lattice<E> {
      * @throws NoSuchElementException if the meet is not defined (lattice is incomplete)
      */
     public E meet(E a, E b) {
-        E result = meetTable.get(new Pair<>(a, b));
-        if (result == null) throw new NoSuchElementException("Meet not defined for " + a + ", " + b);
+        final E result = meetTable.get(new Pair<>(a, b));
+        if (result == null) {
+            throw new NoSuchElementException("Meet not defined for " + a + ", " + b);
+        }
         return result;
     }
 
@@ -59,9 +63,11 @@ public final class Lattice<E> {
      * Returns the bottom element (minimum) of the lattice.
      */
     public Optional<E> bottom() {
-        for (E e : order.getElements())
-            if (order.lowerSet(e).size() == 1) // only itself
+        for (E e : order.getElements()) {
+            if (order.lowerSet(e).size() == 1) { // only itself
                 return Optional.of(e);
+            }
+        }
         return Optional.empty();
     }
 
@@ -69,9 +75,11 @@ public final class Lattice<E> {
      * Returns the top element (maximum) of the lattice.
      */
     public Optional<E> top() {
-        for (E e : order.getElements())
-            if (order.upperSet(e).size() == 1) // only itself
+        for (E e : order.getElements()) {
+            if (order.upperSet(e).size() == 1) { // only itself
                 return Optional.of(e);
+            }
+        }
         return Optional.empty();
     }
 
@@ -80,14 +88,16 @@ public final class Lattice<E> {
      * Returns an empty list when the lattice is well-formed.
      */
     public List<String> validate() {
-        List<String> errors = new ArrayList<>(order.validate());
-        List<E> elems = new ArrayList<>(order.getElements());
+        final List<String> errors = new ArrayList<>(order.validate());
+        final List<E> elems = new ArrayList<>(order.getElements());
         for (E a : elems) {
             for (E b : elems) {
-                if (!joinTable.containsKey(new Pair<>(a, b)))
+                if (!joinTable.containsKey(new Pair<>(a, b))) {
                     errors.add("Join missing for (" + a + ", " + b + ")");
-                if (!meetTable.containsKey(new Pair<>(a, b)))
+                }
+                if (!meetTable.containsKey(new Pair<>(a, b))) {
                     errors.add("Meet missing for (" + a + ", " + b + ")");
+                }
             }
         }
         return errors;

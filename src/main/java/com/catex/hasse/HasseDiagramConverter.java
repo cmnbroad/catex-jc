@@ -50,9 +50,10 @@ public final class HasseDiagramConverter {
 
     private static <E> List<HasseDiagram.Cover<E>> toHasseCovers(
             List<PartialOrder.Cover<E>> src) {
-        List<HasseDiagram.Cover<E>> result = new ArrayList<>(src.size());
-        for (PartialOrder.Cover<E> c : src)
+        final List<HasseDiagram.Cover<E>> result = new ArrayList<>(src.size());
+        for (PartialOrder.Cover<E> c : src) {
             result.add(new HasseDiagram.Cover<>(c.lower(), c.upper()));
+        }
         return result;
     }
 
@@ -63,31 +64,44 @@ public final class HasseDiagramConverter {
     static <E> HasseDiagram<E> build(Set<E> nodes, List<HasseDiagram.Cover<E>> covers) {
 
         // Build adjacency: lower → list of upper neighbours
-        Map<E, List<E>> upNeighbours = new LinkedHashMap<>();
-        Map<E, Integer> inDegree     = new LinkedHashMap<>();
-        for (E n : nodes) { upNeighbours.put(n, new ArrayList<>()); inDegree.put(n, 0); }
+        final Map<E, List<E>> upNeighbours = new LinkedHashMap<>();
+        final Map<E, Integer> inDegree     = new LinkedHashMap<>();
+        for (E n : nodes) {
+            upNeighbours.put(n, new ArrayList<>());
+            inDegree.put(n, 0);
+        }
         for (HasseDiagram.Cover<E> c : covers) {
             upNeighbours.get(c.lower()).add(c.upper());
             inDegree.merge(c.upper(), 1, Integer::sum);
         }
 
         // Rank map: initialise to 0
-        Map<E, Integer> rank = new LinkedHashMap<>();
-        for (E n : nodes) rank.put(n, 0);
+        final Map<E, Integer> rank = new LinkedHashMap<>();
+        for (E n : nodes) {
+            rank.put(n, 0);
+        }
 
         // Kahn's BFS — seed with nodes that have in-degree 0 (minimal elements)
-        Deque<E> queue = new ArrayDeque<>();
-        for (E n : nodes) if (inDegree.get(n) == 0) queue.add(n);
+        final Deque<E> queue = new ArrayDeque<>();
+        for (E n : nodes) {
+            if (inDegree.get(n) == 0) {
+                queue.add(n);
+            }
+        }
 
         while (!queue.isEmpty()) {
-            E cur = queue.poll();
+            final E cur = queue.poll();
             for (E upper : upNeighbours.get(cur)) {
                 // Longest-path update
-                int candidate = rank.get(cur) + 1;
-                if (candidate > rank.get(upper)) rank.put(upper, candidate);
+                final int candidate = rank.get(cur) + 1;
+                if (candidate > rank.get(upper)) {
+                    rank.put(upper, candidate);
+                }
 
-                int newDeg = inDegree.merge(upper, -1, Integer::sum);
-                if (newDeg == 0) queue.add(upper);
+                final int newDeg = inDegree.merge(upper, -1, Integer::sum);
+                if (newDeg == 0) {
+                    queue.add(upper);
+                }
             }
         }
 

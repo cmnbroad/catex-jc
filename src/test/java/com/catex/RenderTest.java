@@ -11,6 +11,9 @@ import com.catex.render.*;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.regex.Pattern;
 
 import static org.testng.Assert.*;
@@ -287,5 +290,81 @@ public class RenderTest {
     public void testSvgNonEmpty(String name, String svg) {
         assertTrue(svg.length() > 200,
                 "SVG for '" + name + "' seems too short (" + svg.length() + " chars)");
+    }
+
+    // -----------------------------------------------------------------------
+    // File rendering
+    // -----------------------------------------------------------------------
+
+    @Test
+    public void testHasseDiagramRendersToFile() throws IOException {
+        final HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.chainCategory());
+        final Path tmp = Files.createTempFile("hasse-", ".svg");
+        try {
+            new HasseDiagramRenderer<String>().renderSvgToFile(hd, tmp);
+            final String content = Files.readString(tmp);
+            assertTrue(content.startsWith("<?xml"), "File should start with XML declaration");
+            assertTrue(content.endsWith("</svg>"), "File should end with </svg>");
+            assertTrue(content.length() > 200, "File content seems too short");
+        } finally {
+            Files.deleteIfExists(tmp);
+        }
+    }
+
+    @Test
+    public void testLatticeRendersToFile() throws IOException {
+        final Lattice<String> lat = LatticeConverter.fromCategory(Fixtures.diamondCategory());
+        final Path tmp = Files.createTempFile("lattice-", ".svg");
+        try {
+            new LatticeRenderer<String>().renderSvgToFile(lat, RenderOptions.defaults(), tmp);
+            final String content = Files.readString(tmp);
+            assertTrue(content.contains("<svg"), "File should contain <svg> element");
+            assertTrue(content.endsWith("</svg>"), "File should end with </svg>");
+        } finally {
+            Files.deleteIfExists(tmp);
+        }
+    }
+
+    @Test
+    public void testGraphRendersToFile() throws IOException {
+        final DirectedGraph<String, String> g = GraphConverter.toGraph(Fixtures.twoObjectCategory());
+        final Path tmp = Files.createTempFile("graph-", ".svg");
+        try {
+            new GraphRenderer<String, String>().renderSvgToFile(g, tmp);
+            final String content = Files.readString(tmp);
+            assertTrue(content.contains("<svg"), "File should contain <svg> element");
+            assertTrue(content.endsWith("</svg>"), "File should end with </svg>");
+        } finally {
+            Files.deleteIfExists(tmp);
+        }
+    }
+
+    @Test
+    public void testCategoryRendersToFile() throws IOException {
+        final com.catex.core.FiniteCategory<String, String> cat = Fixtures.diamondCategory();
+        final Path tmp = Files.createTempFile("category-", ".svg");
+        try {
+            new CategoryRenderer<String, String>().renderSvgToFile(cat, tmp);
+            final String content = Files.readString(tmp);
+            assertTrue(content.contains("<svg"), "File should contain <svg> element");
+            assertTrue(content.endsWith("</svg>"), "File should end with </svg>");
+        } finally {
+            Files.deleteIfExists(tmp);
+        }
+    }
+
+    @Test
+    public void testCategoryRendersToFileWithoutIdentities() throws IOException {
+        final com.catex.core.FiniteCategory<String, String> cat = Fixtures.twoObjectCategory();
+        final Path tmp = Files.createTempFile("category-no-id-", ".svg");
+        try {
+            new CategoryRenderer<String, String>()
+                    .renderSvgToFile(cat, RenderOptions.defaults(), tmp, false);
+            final String content = Files.readString(tmp);
+            assertTrue(content.contains("<svg"), "File should contain <svg> element");
+            assertTrue(content.endsWith("</svg>"), "File should end with </svg>");
+        } finally {
+            Files.deleteIfExists(tmp);
+        }
     }
 }

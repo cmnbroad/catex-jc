@@ -40,13 +40,16 @@ public final class GraphConverter {
     public static <OL, ML> DirectedGraph<OL, ML> toGraph(
             FiniteCategory<OL, ML> category, boolean includeIdentities) {
 
-        Set<OL> vertices = new LinkedHashSet<>();
-        for (CategoryObject<OL> obj : category.getObjects())
+        final Set<OL> vertices = new LinkedHashSet<>();
+        for (CategoryObject<OL> obj : category.getObjects()) {
             vertices.add(obj.getLabel());
+        }
 
-        List<DirectedGraph.Edge<OL, ML>> edges = new ArrayList<>();
+        final List<DirectedGraph.Edge<OL, ML>> edges = new ArrayList<>();
         for (Morphism<ML, OL> m : category.getMorphisms()) {
-            if (!includeIdentities && m.isIdentity()) continue;
+            if (!includeIdentities && m.isIdentity()) {
+                continue;
+            }
             edges.add(new DirectedGraph.Edge<>(
                     m.getLabel(), m.getDomain().getLabel(), m.getCodomain().getLabel()));
         }
@@ -68,22 +71,22 @@ public final class GraphConverter {
      * computed because a bare graph carries no composition information.
      */
     public static <V, E> FiniteCategory<V, String> fromGraph(DirectedGraph<V, E> graph) {
-        FiniteCategory.Builder<V, String> builder = FiniteCategory.builder();
+        final FiniteCategory.Builder<V, String> builder = FiniteCategory.builder();
 
         // Objects and identity morphisms
         for (V v : graph.getVertices()) {
-            var obj  = new CategoryObject<>(v);
-            var idMorphism = new com.catex.core.Morphism<String, V>("id_" + v, obj, obj);
+            final var obj        = new CategoryObject<>(v);
+            final var idMorphism = new com.catex.core.Morphism<String, V>("id_" + v, obj, obj);
             builder.addObject(obj).addMorphism(idMorphism);
         }
 
         // Edge morphisms and unit-law compositions
         for (DirectedGraph.Edge<V, E> edge : graph.getEdges()) {
-            var src   = new CategoryObject<>(edge.source());
-            var tgt   = new CategoryObject<>(edge.target());
-            var idSrc = new com.catex.core.Morphism<String, V>("id_" + edge.source(), src, src);
-            var idTgt = new com.catex.core.Morphism<String, V>("id_" + edge.target(), tgt, tgt);
-            var m     = new com.catex.core.Morphism<String, V>(edge.label().toString(), src, tgt);
+            final var src   = new CategoryObject<>(edge.source());
+            final var tgt   = new CategoryObject<>(edge.target());
+            final var idSrc = new com.catex.core.Morphism<String, V>("id_" + edge.source(), src, src);
+            final var idTgt = new com.catex.core.Morphism<String, V>("id_" + edge.target(), tgt, tgt);
+            final var m     = new com.catex.core.Morphism<String, V>(edge.label().toString(), src, tgt);
 
             builder.addMorphism(m);
             builder.addComposition(idTgt, m, m);   // id_tgt ∘ m = m

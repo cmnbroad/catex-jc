@@ -29,25 +29,25 @@ public final class LayeredLayout {
      * @return a map from node to its (x, y) SVG position
      */
     public static <E> Map<E, Point> layout(HasseDiagram<E> diagram, RenderOptions opts) {
-        Map<E, Point> positions = new LinkedHashMap<>();
+        final Map<E, Point> positions = new LinkedHashMap<>();
 
-        int layers    = diagram.maxRank() + 1;
-        double usableH = opts.height - 2.0 * opts.margin;
-        double usableW = opts.width  - 2.0 * opts.margin;
+        final int layers     = diagram.maxRank() + 1;
+        final double usableH = opts.height - 2.0 * opts.margin;
+        final double usableW = opts.width  - 2.0 * opts.margin;
 
         // Vertical step: evenly distribute layers; clamp to layerHeight preference
-        double layerStep = (layers > 1)
+        final double layerStep = (layers > 1)
                 ? Math.min(opts.layerHeight, usableH / (layers - 1))
                 : 0;
 
         for (int rank = 0; rank <= diagram.maxRank(); rank++) {
-            List<E> layer   = diagram.layer(rank);
-            int     n       = layer.size();
+            final List<E> layer = diagram.layer(rank);
+            final int     n     = layer.size();
             // y: rank 0 at bottom, maxRank at top
-            double  y = opts.margin + (diagram.maxRank() - rank) * layerStep;
+            final double  y = opts.margin + (diagram.maxRank() - rank) * layerStep;
 
             for (int i = 0; i < n; i++) {
-                double x = opts.margin + (n == 1
+                final double x = opts.margin + (n == 1
                         ? usableW / 2.0
                         : usableW * i / (n - 1));
                 positions.put(layer.get(i), new Point(x, y));
@@ -71,30 +71,45 @@ public final class LayeredLayout {
      * @throws IllegalArgumentException if the graph has a cycle
      */
     public static <V> Map<V, Integer> computeRanks(Set<V> nodes, Map<V, List<V>> edges) {
-        Map<V, Integer> inDegree = new LinkedHashMap<>();
-        for (V v : nodes) inDegree.put(v, 0);
-        for (List<V> targets : edges.values())
-            for (V t : targets)
+        final Map<V, Integer> inDegree = new LinkedHashMap<>();
+        for (V v : nodes) {
+            inDegree.put(v, 0);
+        }
+        for (List<V> targets : edges.values()) {
+            for (V t : targets) {
                 inDegree.merge(t, 1, Integer::sum);
+            }
+        }
 
-        Map<V, Integer> rank = new LinkedHashMap<>();
-        for (V v : nodes) rank.put(v, 0);
+        final Map<V, Integer> rank = new LinkedHashMap<>();
+        for (V v : nodes) {
+            rank.put(v, 0);
+        }
 
-        Deque<V> queue = new ArrayDeque<>();
-        for (V v : nodes) if (inDegree.get(v) == 0) queue.add(v);
+        final Deque<V> queue = new ArrayDeque<>();
+        for (V v : nodes) {
+            if (inDegree.get(v) == 0) {
+                queue.add(v);
+            }
+        }
 
         int processed = 0;
         while (!queue.isEmpty()) {
-            V cur = queue.poll();
+            final V cur = queue.poll();
             processed++;
             for (V next : edges.getOrDefault(cur, Collections.emptyList())) {
-                int candidate = rank.get(cur) + 1;
-                if (candidate > rank.get(next)) rank.put(next, candidate);
-                if (inDegree.merge(next, -1, Integer::sum) == 0) queue.add(next);
+                final int candidate = rank.get(cur) + 1;
+                if (candidate > rank.get(next)) {
+                    rank.put(next, candidate);
+                }
+                if (inDegree.merge(next, -1, Integer::sum) == 0) {
+                    queue.add(next);
+                }
             }
         }
-        if (processed != nodes.size())
+        if (processed != nodes.size()) {
             throw new IllegalArgumentException("Graph contains a cycle; cannot use layered layout.");
+        }
         return rank;
     }
 
@@ -103,20 +118,20 @@ public final class LayeredLayout {
                                                   Map<Integer, List<V>> layers,
                                                   int maxRank,
                                                   RenderOptions opts) {
-        Map<V, Point> positions = new LinkedHashMap<>();
-        double usableH = opts.height - 2.0 * opts.margin;
-        double usableW = opts.width  - 2.0 * opts.margin;
-        double layerStep = (maxRank > 0)
+        final Map<V, Point> positions = new LinkedHashMap<>();
+        final double usableH = opts.height - 2.0 * opts.margin;
+        final double usableW = opts.width  - 2.0 * opts.margin;
+        final double layerStep = (maxRank > 0)
                 ? Math.min(opts.layerHeight, usableH / maxRank)
                 : 0;
 
         for (Map.Entry<Integer, List<V>> entry : layers.entrySet()) {
-            int rank = entry.getKey();
-            List<V> layer = entry.getValue();
-            int n = layer.size();
-            double y = opts.margin + (maxRank - rank) * layerStep;
+            final int rank     = entry.getKey();
+            final List<V> layer = entry.getValue();
+            final int n        = layer.size();
+            final double y     = opts.margin + (maxRank - rank) * layerStep;
             for (int i = 0; i < n; i++) {
-                double x = opts.margin + (n == 1
+                final double x = opts.margin + (n == 1
                         ? usableW / 2.0
                         : usableW * i / (n - 1));
                 positions.put(layer.get(i), new Point(x, y));

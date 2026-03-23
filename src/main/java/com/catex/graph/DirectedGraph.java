@@ -32,22 +32,33 @@ public final class DirectedGraph<V, E> {
 
     /** All edges leaving {@code source}. */
     public List<Edge<V,E>> edgesFrom(V source) {
-        List<Edge<V,E>> result = new ArrayList<>();
-        for (Edge<V,E> e : edges) if (e.source().equals(source)) result.add(e);
+        final List<Edge<V,E>> result = new ArrayList<>();
+        for (Edge<V,E> e : edges) {
+            if (e.source().equals(source)) {
+                result.add(e);
+            }
+        }
         return Collections.unmodifiableList(result);
     }
 
     /** All edges arriving at {@code target}. */
     public List<Edge<V,E>> edgesTo(V target) {
-        List<Edge<V,E>> result = new ArrayList<>();
-        for (Edge<V,E> e : edges) if (e.target().equals(target)) result.add(e);
+        final List<Edge<V,E>> result = new ArrayList<>();
+        for (Edge<V,E> e : edges) {
+            if (e.target().equals(target)) {
+                result.add(e);
+            }
+        }
         return Collections.unmodifiableList(result);
     }
 
     /** Returns {@code true} if there is at least one edge from {@code u} to {@code v}. */
     public boolean hasEdge(V u, V v) {
-        for (Edge<V,E> e : edges)
-            if (e.source().equals(u) && e.target().equals(v)) return true;
+        for (Edge<V,E> e : edges) {
+            if (e.source().equals(u) && e.target().equals(v)) {
+                return true;
+            }
+        }
         return false;
     }
 

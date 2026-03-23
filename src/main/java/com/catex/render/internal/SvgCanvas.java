@@ -23,9 +23,10 @@ public final class SvgCanvas {
     public SvgCanvas(int width, int height, String background) {
         this.width  = width;
         this.height = height;
-        if (background != null)
+        if (background != null) {
             body.append(fmt("<rect width=\"%d\" height=\"%d\" fill=\"%s\"/>%n",
                     width, height, background));
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -40,8 +41,8 @@ public final class SvgCanvas {
      * @param size  half-length of the arrowhead in px (markerWidth = size * 1.5)
      */
     public void addArrowMarker(String id, String color, double size) {
-        double w = size * 1.5;
-        double h = size;
+        final double w = size * 1.5;
+        final double h = size;
         // refX = w so the tip aligns with the line endpoint
         defs.append(fmt(
             "<marker id=\"%s\" markerUnits=\"userSpaceOnUse\" markerWidth=\"%.1f\" "
@@ -66,7 +67,7 @@ public final class SvgCanvas {
     /** Straight line, optionally with a marker at the end. */
     public void line(double x1, double y1, double x2, double y2,
                      String stroke, double strokeWidth, String markerId) {
-        String marker = markerId == null ? "" : fmt(" marker-end=\"url(#%s)\"", markerId);
+        final String marker = markerId == null ? "" : fmt(" marker-end=\"url(#%s)\"", markerId);
         body.append(fmt(
             "<line x1=\"%.2f\" y1=\"%.2f\" x2=\"%.2f\" y2=\"%.2f\" "
             + "stroke=\"%s\" stroke-width=\"%.2f\"%s/>%n",
@@ -80,9 +81,9 @@ public final class SvgCanvas {
     public void curvedLine(double x1, double y1, double x2, double y2,
                            double cpOffX, double cpOffY,
                            String stroke, double strokeWidth, String markerId) {
-        double mx  = (x1 + x2) / 2 + cpOffX;
-        double my  = (y1 + y2) / 2 + cpOffY;
-        String marker = markerId == null ? "" : fmt(" marker-end=\"url(#%s)\"", markerId);
+        final double mx  = (x1 + x2) / 2 + cpOffX;
+        final double my  = (y1 + y2) / 2 + cpOffY;
+        final String marker = markerId == null ? "" : fmt(" marker-end=\"url(#%s)\"", markerId);
         body.append(fmt(
             "<path d=\"M %.2f %.2f Q %.2f %.2f %.2f %.2f\" fill=\"none\" "
             + "stroke=\"%s\" stroke-width=\"%.2f\"%s/>%n",
@@ -95,22 +96,22 @@ public final class SvgCanvas {
     public void selfLoop(double cx, double cy, double nodeR,
                          String stroke, double strokeWidth, String markerId) {
         // Small circle centred directly above the node
-        double loopR = nodeR * 0.8;
-        double lcx   = cx;
-        double lcy   = cy - nodeR - loopR + 2; // slightly overlap node edge
+        final double loopR = nodeR * 0.8;
+        final double lcx   = cx;
+        final double lcy   = cy - nodeR - loopR + 2; // slightly overlap node edge
 
         // Arc: almost-full circle (350° to leave a tiny gap for the arrowhead)
         // We draw it as two lines entering/exiting the loop circle
-        double gap = Math.toRadians(10);
-        double startAngle = Math.PI / 2 + gap;   // just past bottom of loop
-        double endAngle   = Math.PI / 2 - gap;   // just before bottom of loop
+        final double gap = Math.toRadians(10);
+        final double startAngle = Math.PI / 2 + gap;   // just past bottom of loop
+        final double endAngle   = Math.PI / 2 - gap;   // just before bottom of loop
 
-        double sx = lcx + loopR * Math.cos(startAngle);
-        double sy = lcy + loopR * Math.sin(startAngle);
-        double ex = lcx + loopR * Math.cos(endAngle);
-        double ey = lcy + loopR * Math.sin(endAngle);
+        final double sx = lcx + loopR * Math.cos(startAngle);
+        final double sy = lcy + loopR * Math.sin(startAngle);
+        final double ex = lcx + loopR * Math.cos(endAngle);
+        final double ey = lcy + loopR * Math.sin(endAngle);
 
-        String marker = markerId == null ? "" : fmt(" marker-end=\"url(#%s)\"", markerId);
+        final String marker = markerId == null ? "" : fmt(" marker-end=\"url(#%s)\"", markerId);
         // large-arc-flag=1 to draw the long way round
         body.append(fmt(
             "<path d=\"M %.2f %.2f A %.2f %.2f 0 1 1 %.2f %.2f\" fill=\"none\" "
@@ -139,11 +140,11 @@ public final class SvgCanvas {
     public void edgeLabel(double x1, double y1, double x2, double y2,
                           double perpOffX, double perpOffY,
                           String content, int fontSize, String fill) {
-        double mx = (x1 + x2) / 2 + perpOffX;
-        double my = (y1 + y2) / 2 + perpOffY;
+        final double mx = (x1 + x2) / 2 + perpOffX;
+        final double my = (y1 + y2) / 2 + perpOffY;
         // Translucent background pill for readability
-        double fw = content.length() * fontSize * 0.6 + 6;
-        double fh = fontSize + 4;
+        final double fw = content.length() * fontSize * 0.6 + 6;
+        final double fh = fontSize + 4;
         body.append(fmt(
             "<rect x=\"%.2f\" y=\"%.2f\" width=\"%.2f\" height=\"%.2f\" "
             + "rx=\"3\" ry=\"3\" fill=\"white\" fill-opacity=\"0.8\"/>%n",
@@ -156,14 +157,15 @@ public final class SvgCanvas {
     // -------------------------------------------------------------------------
 
     public String build() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(fmt(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n"
             + "<svg xmlns=\"http://www.w3.org/2000/svg\" "
             + "width=\"%d\" height=\"%d\" viewBox=\"0 0 %d %d\">%n",
             width, height, width, height));
-        if (defs.length() > 0)
+        if (defs.length() > 0) {
             sb.append("<defs>\n").append(defs).append("</defs>\n");
+        }
         sb.append(body);
         sb.append("</svg>");
         return sb.toString();
