@@ -82,13 +82,13 @@ Renderers are available for all structures: `CategoryRenderer`, `GraphRenderer`,
 
 | Package | Description |
 |---|---|
-| `com.catex.core` | `FiniteCategory`, `CategoryObject`, `Morphism`, `CategorySource` |
-| `com.catex.convert` | `CategoryConverter` — unified conversion facade |
-| `com.catex.graph` | `DirectedGraph`, `GraphConverter` |
-| `com.catex.poset` | `PartialOrder`, `PosetConverter` |
-| `com.catex.lattice` | `Lattice`, `LatticeConverter` |
-| `com.catex.hasse` | `HasseDiagram`, `HasseDiagramConverter` |
-| `com.catex.render` | Renderers, `RenderOptions`, SVG layout internals |
+| `com.github.catexjc.core` | `FiniteCategory`, `CategoryObject`, `Morphism`, `CategorySource` |
+| `com.github.catexjc.convert` | `CategoryConverter` — unified conversion facade |
+| `com.github.catexjc.graph` | `DirectedGraph`, `GraphConverter` |
+| `com.github.catexjc.poset` | `PartialOrder`, `PosetConverter` |
+| `com.github.catexjc.lattice` | `Lattice`, `LatticeConverter` |
+| `com.github.catexjc.hasse` | `HasseDiagram`, `HasseDiagramConverter` |
+| `com.github.catexjc.render` | Renderers, `RenderOptions`, SVG layout internals |
 
 ## Notes
 
