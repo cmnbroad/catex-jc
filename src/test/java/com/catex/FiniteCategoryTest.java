@@ -26,7 +26,7 @@ public class FiniteCategoryTest {
     }
 
     @Test(dataProvider = "validCategories")
-    public void testValidCategoriesPassValidation(String name, FiniteCategory<String, String> cat) {
+    public void testValidCategoriesPassValidation(final String name, final FiniteCategory<String, String> cat) {
         List<String> errors = cat.validate();
         assertTrue(errors.isEmpty(),
                 "Expected no validation errors for '" + name + "' but got: " + errors);
@@ -46,7 +46,7 @@ public class FiniteCategoryTest {
     }
 
     @Test(dataProvider = "objectCounts")
-    public void testObjectCount(FiniteCategory<String, String> cat, int expected) {
+    public void testObjectCount(final FiniteCategory<String, String> cat, final int expected) {
         assertEquals(cat.getObjects().size(), expected);
     }
 
@@ -65,7 +65,7 @@ public class FiniteCategoryTest {
     }
 
     @Test(dataProvider = "morphismCounts")
-    public void testMorphismCount(FiniteCategory<String, String> cat, int expected) {
+    public void testMorphismCount(final FiniteCategory<String, String> cat, final int expected) {
         assertEquals(cat.getMorphisms().size(), expected);
     }
 
@@ -85,7 +85,7 @@ public class FiniteCategoryTest {
     }
 
     @Test(dataProvider = "identityChecks")
-    public void testIdentityPresent(String label, FiniteCategory<String, String> cat) {
+    public void testIdentityPresent(final String label, final FiniteCategory<String, String> cat) {
         var obj = new CategoryObject<>(label);
         assertTrue(cat.identityOf(obj).isPresent(), "Identity missing for object " + label);
         assertTrue(cat.identityOf(obj).get().isIdentity());

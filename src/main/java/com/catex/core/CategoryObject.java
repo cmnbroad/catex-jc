@@ -12,7 +12,7 @@ public final class CategoryObject<L> {
 
     private final L label;
 
-    public CategoryObject(L label) {
+    public CategoryObject(final L label) {
         this.label = Objects.requireNonNull(label, "label must not be null");
     }
 
@@ -21,7 +21,7 @@ public final class CategoryObject<L> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof CategoryObject<?> that)) return false;
         return Objects.equals(label, that.label);

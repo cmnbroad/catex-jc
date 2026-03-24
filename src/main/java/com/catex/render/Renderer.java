@@ -15,10 +15,10 @@ public interface Renderer<T> {
      * Renders {@code structure} with the given options and returns a
      * self-contained SVG document as a string.
      */
-    String renderSvg(T structure, RenderOptions options);
+    String renderSvg(final T structure, final RenderOptions options);
 
     /** Renders with {@link RenderOptions#defaults()}. */
-    default String renderSvg(T structure) {
+    default String renderSvg(final T structure) {
         return renderSvg(structure, RenderOptions.defaults());
     }
 
@@ -31,7 +31,7 @@ public interface Renderer<T> {
      * @param path      destination file path
      * @throws IOException if the file cannot be written
      */
-    default void renderSvgToFile(T structure, RenderOptions options, Path path) throws IOException {
+    default void renderSvgToFile(final T structure, final RenderOptions options, final Path path) throws IOException {
         Files.writeString(path, renderSvg(structure, options));
     }
 
@@ -42,7 +42,7 @@ public interface Renderer<T> {
      * @param path      destination file path
      * @throws IOException if the file cannot be written
      */
-    default void renderSvgToFile(T structure, Path path) throws IOException {
+    default void renderSvgToFile(final T structure, final Path path) throws IOException {
         renderSvgToFile(structure, RenderOptions.defaults(), path);
     }
 }

@@ -23,7 +23,7 @@ import java.util.Optional;
 public final class LatticeRenderer<E> implements Renderer<Lattice<E>> {
 
     @Override
-    public String renderSvg(Lattice<E> lattice, RenderOptions opts) {
+    public String renderSvg(final Lattice<E> lattice, final RenderOptions opts) {
         final HasseDiagram<E> diagram = HasseDiagramConverter.fromLattice(lattice);
         final SvgCanvas canvas = new SvgCanvas(opts.width, opts.height, "#FAFAFA");
 
@@ -33,7 +33,7 @@ public final class LatticeRenderer<E> implements Renderer<Lattice<E>> {
         final Optional<E> bottom = lattice.bottom();
 
         // Cover edges
-        for (HasseDiagram.Cover<E> cover : diagram.getCovers()) {
+        for (final HasseDiagram.Cover<E> cover : diagram.getCovers()) {
             final Point src  = pos.get(cover.lower());
             final Point tgt  = pos.get(cover.upper());
             final Point from = src.edgeToward(tgt, opts.nodeRadius + 2);
@@ -43,7 +43,7 @@ public final class LatticeRenderer<E> implements Renderer<Lattice<E>> {
         }
 
         // Nodes
-        for (E node : diagram.getNodes()) {
+        for (final E node : diagram.getNodes()) {
             final Point p = pos.get(node);
             String fill = opts.nodeColor;
             if (top.isPresent() && top.get().equals(node)) {

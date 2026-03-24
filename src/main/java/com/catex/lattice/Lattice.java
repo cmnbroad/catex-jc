@@ -20,7 +20,7 @@ public final class Lattice<E> {
     private final Map<Pair<E>, E>  joinTable;
     private final Map<Pair<E>, E>  meetTable;
 
-    Lattice(PartialOrder<E> order, Map<Pair<E>, E> joinTable, Map<Pair<E>, E> meetTable) {
+    Lattice(final PartialOrder<E> order, final Map<Pair<E>, E> joinTable, final Map<Pair<E>, E> meetTable) {
         this.order     = order;
         this.joinTable = Collections.unmodifiableMap(new LinkedHashMap<>(joinTable));
         this.meetTable = Collections.unmodifiableMap(new LinkedHashMap<>(meetTable));
@@ -38,7 +38,7 @@ public final class Lattice<E> {
      *
      * @throws NoSuchElementException if the join is not defined (lattice is incomplete)
      */
-    public E join(E a, E b) {
+    public E join(final E a, final E b) {
         final E result = joinTable.get(new Pair<>(a, b));
         if (result == null) {
             throw new NoSuchElementException("Join not defined for " + a + ", " + b);
@@ -51,7 +51,7 @@ public final class Lattice<E> {
      *
      * @throws NoSuchElementException if the meet is not defined (lattice is incomplete)
      */
-    public E meet(E a, E b) {
+    public E meet(final E a, final E b) {
         final E result = meetTable.get(new Pair<>(a, b));
         if (result == null) {
             throw new NoSuchElementException("Meet not defined for " + a + ", " + b);
@@ -63,7 +63,7 @@ public final class Lattice<E> {
      * Returns the bottom element (minimum) of the lattice.
      */
     public Optional<E> bottom() {
-        for (E e : order.getElements()) {
+        for (final E e : order.getElements()) {
             if (order.lowerSet(e).size() == 1) { // only itself
                 return Optional.of(e);
             }
@@ -75,7 +75,7 @@ public final class Lattice<E> {
      * Returns the top element (maximum) of the lattice.
      */
     public Optional<E> top() {
-        for (E e : order.getElements()) {
+        for (final E e : order.getElements()) {
             if (order.upperSet(e).size() == 1) { // only itself
                 return Optional.of(e);
             }
@@ -90,8 +90,8 @@ public final class Lattice<E> {
     public List<String> validate() {
         final List<String> errors = new ArrayList<>(order.validate());
         final List<E> elems = new ArrayList<>(order.getElements());
-        for (E a : elems) {
-            for (E b : elems) {
+        for (final E a : elems) {
+            for (final E b : elems) {
                 if (!joinTable.containsKey(new Pair<>(a, b))) {
                     errors.add("Join missing for (" + a + ", " + b + ")");
                 }
@@ -114,7 +114,7 @@ public final class Lattice<E> {
 
     record Pair<E>(E first, E second) {
         /** Normalise so that {a,b} == {b,a} for symmetric operations. */
-        static <E extends Comparable<E>> Pair<E> of(E a, E b) {
+        static <E extends Comparable<E>> Pair<E> of(final E a, final E b) {
             return (a.compareTo(b) <= 0) ? new Pair<>(a, b) : new Pair<>(b, a);
         }
     }

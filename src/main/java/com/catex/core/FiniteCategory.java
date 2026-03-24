@@ -31,9 +31,9 @@ public final class FiniteCategory<OL, ML> {
     private final Map<CompositionKey<ML>, Morphism<ML, OL>> compositionTable;
 
     private FiniteCategory(
-            Set<CategoryObject<OL>>              objects,
-            Set<Morphism<ML, OL>>                morphisms,
-            Map<CompositionKey<ML>, Morphism<ML, OL>> compositionTable) {
+            final Set<CategoryObject<OL>>              objects,
+            final Set<Morphism<ML, OL>>                morphisms,
+            final Map<CompositionKey<ML>, Morphism<ML, OL>> compositionTable) {
         this.objects          = Collections.unmodifiableSet(new LinkedHashSet<>(objects));
         this.morphisms        = Collections.unmodifiableSet(new LinkedHashSet<>(morphisms));
         this.compositionTable = Collections.unmodifiableMap(new LinkedHashMap<>(compositionTable));
@@ -49,9 +49,9 @@ public final class FiniteCategory<OL, ML> {
     /**
      * Returns all morphisms whose domain equals the given object.
      */
-    public Set<Morphism<ML, OL>> morphismsFrom(CategoryObject<OL> source) {
+    public Set<Morphism<ML, OL>> morphismsFrom(final CategoryObject<OL> source) {
         final Set<Morphism<ML, OL>> result = new LinkedHashSet<>();
-        for (Morphism<ML, OL> m : morphisms) {
+        for (final Morphism<ML, OL> m : morphisms) {
             if (m.getDomain().equals(source)) {
                 result.add(m);
             }
@@ -62,9 +62,9 @@ public final class FiniteCategory<OL, ML> {
     /**
      * Returns all morphisms whose codomain equals the given object.
      */
-    public Set<Morphism<ML, OL>> morphismsTo(CategoryObject<OL> target) {
+    public Set<Morphism<ML, OL>> morphismsTo(final CategoryObject<OL> target) {
         final Set<Morphism<ML, OL>> result = new LinkedHashSet<>();
-        for (Morphism<ML, OL> m : morphisms) {
+        for (final Morphism<ML, OL> m : morphisms) {
             if (m.getCodomain().equals(target)) {
                 result.add(m);
             }
@@ -76,7 +76,7 @@ public final class FiniteCategory<OL, ML> {
      * Computes g∘f if defined (codomain(f) == domain(g) and the pair is in the
      * composition table), otherwise returns {@link Optional#empty()}.
      */
-    public Optional<Morphism<ML, OL>> compose(Morphism<ML, OL> g, Morphism<ML, OL> f) {
+    public Optional<Morphism<ML, OL>> compose(final Morphism<ML, OL> g, final Morphism<ML, OL> f) {
         return Optional.ofNullable(
                 compositionTable.get(new CompositionKey<>(g.getLabel(), f.getLabel())));
     }
@@ -84,7 +84,7 @@ public final class FiniteCategory<OL, ML> {
     /**
      * Returns the identity morphism for the given object, if present.
      */
-    public Optional<Morphism<ML, OL>> identityOf(CategoryObject<OL> object) {
+    public Optional<Morphism<ML, OL>> identityOf(final CategoryObject<OL> object) {
         return morphisms.stream()
                 .filter(m -> m.isIdentity() && m.getDomain().equals(object))
                 .findFirst();
@@ -102,7 +102,7 @@ public final class FiniteCategory<OL, ML> {
         final List<String> errors = new ArrayList<>();
 
         // 1. Every object must have an identity morphism
-        for (CategoryObject<OL> obj : objects) {
+        for (final CategoryObject<OL> obj : objects) {
             if (identityOf(obj).isEmpty()) {
                 errors.add("No identity morphism for object: " + obj);
             }
@@ -110,12 +110,12 @@ public final class FiniteCategory<OL, ML> {
 
         // Build a label→morphism lookup for composition checks
         final Map<ML, Morphism<ML, OL>> byLabel = new LinkedHashMap<>();
-        for (Morphism<ML, OL> m : morphisms) {
+        for (final Morphism<ML, OL> m : morphisms) {
             byLabel.put(m.getLabel(), m);
         }
 
         // 2. Unit laws and composition type-checking
-        for (Map.Entry<CompositionKey<ML>, Morphism<ML, OL>> entry : compositionTable.entrySet()) {
+        for (final Map.Entry<CompositionKey<ML>, Morphism<ML, OL>> entry : compositionTable.entrySet()) {
             final ML gLabel = entry.getKey().first();
             final ML fLabel = entry.getKey().second();
             final Morphism<ML, OL> composite = entry.getValue();
@@ -155,12 +155,12 @@ public final class FiniteCategory<OL, ML> {
         private final Set<Morphism<ML, OL>>                    morphisms        = new LinkedHashSet<>();
         private final Map<CompositionKey<ML>, Morphism<ML, OL>> compositionTable = new LinkedHashMap<>();
 
-        public Builder<OL, ML> addObject(CategoryObject<OL> obj) {
+        public Builder<OL, ML> addObject(final CategoryObject<OL> obj) {
             objects.add(obj);
             return this;
         }
 
-        public Builder<OL, ML> addMorphism(Morphism<ML, OL> m) {
+        public Builder<OL, ML> addMorphism(final Morphism<ML, OL> m) {
             morphisms.add(m);
             return this;
         }
@@ -168,8 +168,8 @@ public final class FiniteCategory<OL, ML> {
         /**
          * Records that g∘f = composite.
          */
-        public Builder<OL, ML> addComposition(Morphism<ML, OL> g, Morphism<ML, OL> f,
-                                               Morphism<ML, OL> composite) {
+        public Builder<OL, ML> addComposition(final Morphism<ML, OL> g, final Morphism<ML, OL> f,
+                                               final Morphism<ML, OL> composite) {
             compositionTable.put(new CompositionKey<>(g.getLabel(), f.getLabel()), composite);
             return this;
         }

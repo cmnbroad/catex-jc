@@ -30,7 +30,7 @@ public class CategorySourceTest {
     }
 
     @Test(dataProvider = "categorySources")
-    public void testCategorySourceProducesValidCategory(String name, CategorySource<String,String> source) {
+    public void testCategorySourceProducesValidCategory(final String name, final CategorySource<String,String> source) {
         FiniteCategory<String,String> cat = source.toCategory();
         List<String> errors = cat.validate();
         assertTrue(errors.isEmpty(),
@@ -42,7 +42,7 @@ public class CategorySourceTest {
     // -----------------------------------------------------------------------
 
     @Test(dataProvider = "categorySources")
-    public void testConverterFromSource(String name, CategorySource<String,String> source) {
+    public void testConverterFromSource(final String name, final CategorySource<String,String> source) {
         var converter = CategoryConverter.from(source);
         assertNotNull(converter.getCategory());
         assertFalse(converter.getCategory().getObjects().isEmpty(),
@@ -90,11 +90,11 @@ public class CategorySourceTest {
         public FiniteCategory<Integer, String> toCategory() {
             FiniteCategory.Builder<Integer, String> builder = FiniteCategory.builder();
 
-            for (int e : ELEMS)
+            for (final int e : ELEMS)
                 builder.addObject(new com.catex.core.CategoryObject<>(e));
 
-            for (int a : ELEMS) {
-                for (int b : ELEMS) {
+            for (final int a : ELEMS) {
+                for (final int b : ELEMS) {
                     if (b % a == 0) { // a divides b
                         String label = a == b ? "id_" + a : a + "|" + b;
                         builder.addMorphism(new com.catex.core.Morphism<>(
@@ -106,9 +106,9 @@ public class CategorySourceTest {
             }
 
             // Add composition entries for all transitive triples
-            for (int a : ELEMS)
-                for (int b : ELEMS)
-                    for (int c : ELEMS)
+            for (final int a : ELEMS)
+                for (final int b : ELEMS)
+                    for (final int c : ELEMS)
                         if (b % a == 0 && c % b == 0) {
                             String lAB = a == b ? "id_" + a : a + "|" + b;
                             String lBC = b == c ? "id_" + b : b + "|" + c;
@@ -142,7 +142,7 @@ public class CategorySourceTest {
     }
 
     @Test(dataProvider = "divisibilityJoins")
-    public void testDivisibilityJoin(Lattice<Integer> lat, int a, int b, int expected) {
+    public void testDivisibilityJoin(final Lattice<Integer> lat, final int a, final int b, final int expected) {
         assertEquals((int) lat.join(a, b), expected,
                 "lcm(" + a + "," + b + ") should be " + expected);
     }
@@ -159,7 +159,7 @@ public class CategorySourceTest {
     }
 
     @Test(dataProvider = "divisibilityMeets")
-    public void testDivisibilityMeet(Lattice<Integer> lat, int a, int b, int expected) {
+    public void testDivisibilityMeet(final Lattice<Integer> lat, final int a, final int b, final int expected) {
         assertEquals((int) lat.meet(a, b), expected,
                 "gcd(" + a + "," + b + ") should be " + expected);
     }

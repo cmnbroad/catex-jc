@@ -34,13 +34,13 @@ public final class LatticeConverter {
      *
      * @throws IllegalArgumentException if the poset is not a lattice
      */
-    public static <E> Lattice<E> fromPoset(PartialOrder<E> poset) {
+    public static <E> Lattice<E> fromPoset(final PartialOrder<E> poset) {
         final List<E> elems = new ArrayList<>(poset.getElements());
         final Map<Lattice.Pair<E>, E> joinTable = new LinkedHashMap<>();
         final Map<Lattice.Pair<E>, E> meetTable = new LinkedHashMap<>();
 
-        for (E a : elems) {
-            for (E b : elems) {
+        for (final E a : elems) {
+            for (final E b : elems) {
                 final Lattice.Pair<E> key = new Lattice.Pair<>(a, b);
                 joinTable.put(key, computeJoin(a, b, poset));
                 meetTable.put(key, computeMeet(a, b, poset));
@@ -54,9 +54,9 @@ public final class LatticeConverter {
     // -------------------------------------------------------------------------
 
     /**
-     * Converts a thin finite category (poset) to a {@link Lattice}.
+     * Converts a preorder finite category (poset) to a {@link Lattice}.
      */
-    public static <OL, ML> Lattice<OL> fromCategory(FiniteCategory<OL, ML> category) {
+    public static <OL, ML> Lattice<OL> fromCategory(final FiniteCategory<OL, ML> category) {
         return fromPoset(PosetConverter.toPoset(category));
     }
 
@@ -65,10 +65,10 @@ public final class LatticeConverter {
     // -------------------------------------------------------------------------
 
     /**
-     * Converts a {@link Lattice} to a thin finite category via its underlying
+     * Converts a {@link Lattice} to a preorder finite category via its underlying
      * partial order.
      */
-    public static <E> FiniteCategory<E, String> toCategory(Lattice<E> lattice) {
+    public static <E> FiniteCategory<E, String> toCategory(final Lattice<E> lattice) {
         return PosetConverter.fromPoset(lattice.getOrder());
     }
 
@@ -77,7 +77,7 @@ public final class LatticeConverter {
     // -------------------------------------------------------------------------
 
     /** Least upper bound of a and b, or throws if none exists. */
-    private static <E> E computeJoin(E a, E b, PartialOrder<E> poset) {
+    private static <E> E computeJoin(final E a, final E b, final PartialOrder<E> poset) {
         // Upper bounds of both a and b
         final Set<E> upperA = poset.upperSet(a);
         final Set<E> upperB = poset.upperSet(b);
@@ -89,9 +89,9 @@ public final class LatticeConverter {
         }
 
         // Least among the common upper bounds
-        for (E candidate : common) {
+        for (final E candidate : common) {
             boolean least = true;
-            for (E other : common) {
+            for (final E other : common) {
                 if (!poset.leq(candidate, other) && !candidate.equals(other)) {
                     least = false;
                     break;
@@ -105,7 +105,7 @@ public final class LatticeConverter {
     }
 
     /** Greatest lower bound of a and b, or throws if none exists. */
-    private static <E> E computeMeet(E a, E b, PartialOrder<E> poset) {
+    private static <E> E computeMeet(final E a, final E b, final PartialOrder<E> poset) {
         final Set<E> lowerA = poset.lowerSet(a);
         final Set<E> lowerB = poset.lowerSet(b);
         final Set<E> common = new LinkedHashSet<>(lowerA);
@@ -115,9 +115,9 @@ public final class LatticeConverter {
             throw new IllegalArgumentException("No lower bound for " + a + " and " + b);
         }
 
-        for (E candidate : common) {
+        for (final E candidate : common) {
             boolean greatest = true;
-            for (E other : common) {
+            for (final E other : common) {
                 if (!poset.leq(other, candidate) && !candidate.equals(other)) {
                     greatest = false;
                     break;

@@ -29,7 +29,7 @@ public class HasseDiagramTest {
     }
 
     @Test(dataProvider = "nodeCounts")
-    public void testNodeCount(String name, HasseDiagram<String> hd, int expected) {
+    public void testNodeCount(final String name, final HasseDiagram<String> hd, final int expected) {
         assertEquals(hd.getNodes().size(), expected,
                 "Node count mismatch for '" + name + "'");
     }
@@ -51,7 +51,7 @@ public class HasseDiagramTest {
     }
 
     @Test(dataProvider = "coverCounts")
-    public void testCoverCount(String name, HasseDiagram<String> hd, int expected) {
+    public void testCoverCount(final String name, final HasseDiagram<String> hd, final int expected) {
         assertEquals(hd.getCovers().size(), expected,
                 "Cover count mismatch for '" + name + "'");
     }
@@ -71,7 +71,7 @@ public class HasseDiagramTest {
     }
 
     @Test(dataProvider = "chainRanks")
-    public void testChainRanks(HasseDiagram<String> hd, String node, int expectedRank) {
+    public void testChainRanks(final HasseDiagram<String> hd, final String node, final int expectedRank) {
         assertEquals(hd.rank(node), expectedRank,
                 "Rank of '" + node + "' should be " + expectedRank);
     }
@@ -92,7 +92,7 @@ public class HasseDiagramTest {
     }
 
     @Test(dataProvider = "diamondRanks")
-    public void testDiamondRanks(HasseDiagram<String> hd, String node, int expectedRank) {
+    public void testDiamondRanks(final HasseDiagram<String> hd, final String node, final int expectedRank) {
         assertEquals(hd.rank(node), expectedRank,
                 "Diamond rank of '" + node + "' should be " + expectedRank);
     }
@@ -111,7 +111,7 @@ public class HasseDiagramTest {
     }
 
     @Test(dataProvider = "maxRanks")
-    public void testMaxRank(String name, HasseDiagram<String> hd, int expected) {
+    public void testMaxRank(final String name, final HasseDiagram<String> hd, final int expected) {
         assertEquals(hd.maxRank(), expected, "maxRank mismatch for '" + name + "'");
     }
 

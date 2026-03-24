@@ -19,7 +19,7 @@ public final class CircularLayout {
      * @param nodes ordered collection of nodes (order determines angular position)
      * @param opts  render options (width, height, layoutRadius)
      */
-    public static <V> Map<V, Point> layout(Collection<V> nodes, RenderOptions opts) {
+    public static <V> Map<V, Point> layout(final Collection<V> nodes, final RenderOptions opts) {
         final Map<V, Point> positions = new LinkedHashMap<>();
         final List<V> list = new ArrayList<>(nodes);
         final int n = list.size();

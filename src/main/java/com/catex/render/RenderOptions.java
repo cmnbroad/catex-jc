@@ -41,7 +41,7 @@ public final class RenderOptions {
     public final String topColor;      // lattice top element colour
     public final String bottomColor;   // lattice bottom element colour
 
-    private RenderOptions(Builder b) {
+    private RenderOptions(final Builder b) {
         this.width           = b.width;
         this.height          = b.height;
         this.margin          = b.margin;
@@ -87,22 +87,22 @@ public final class RenderOptions {
         private String topColor        = "#E8704A";
         private String bottomColor     = "#5BAD72";
 
-        public Builder width(int v)           { width = v;           return this; }
-        public Builder height(int v)          { height = v;          return this; }
-        public Builder margin(int v)          { margin = v;          return this; }
-        public Builder nodeRadius(double v)   { nodeRadius = v;      return this; }
-        public Builder nodeColor(String v)    { nodeColor = v;       return this; }
-        public Builder nodeStroke(String v)   { nodeStroke = v;      return this; }
-        public Builder nodeStrokeWidth(double v){ nodeStrokeWidth=v; return this; }
-        public Builder edgeColor(String v)    { edgeColor = v;       return this; }
-        public Builder edgeStrokeWidth(double v){ edgeStrokeWidth=v; return this; }
-        public Builder arrowSize(double v)    { arrowSize = v;       return this; }
-        public Builder labelColor(String v)   { labelColor = v;      return this; }
-        public Builder fontSize(int v)        { fontSize = v;        return this; }
-        public Builder layerHeight(double v)  { layerHeight = v;     return this; }
-        public Builder layoutRadius(double v) { layoutRadius = v;    return this; }
-        public Builder topColor(String v)     { topColor = v;        return this; }
-        public Builder bottomColor(String v)  { bottomColor = v;     return this; }
+        public Builder width(final int v)           { width = v;           return this; }
+        public Builder height(final int v)          { height = v;          return this; }
+        public Builder margin(final int v)          { margin = v;          return this; }
+        public Builder nodeRadius(final double v)   { nodeRadius = v;      return this; }
+        public Builder nodeColor(final String v)    { nodeColor = v;       return this; }
+        public Builder nodeStroke(final String v)   { nodeStroke = v;      return this; }
+        public Builder nodeStrokeWidth(final double v){ nodeStrokeWidth=v; return this; }
+        public Builder edgeColor(final String v)    { edgeColor = v;       return this; }
+        public Builder edgeStrokeWidth(final double v){ edgeStrokeWidth=v; return this; }
+        public Builder arrowSize(final double v)    { arrowSize = v;       return this; }
+        public Builder labelColor(final String v)   { labelColor = v;      return this; }
+        public Builder fontSize(final int v)        { fontSize = v;        return this; }
+        public Builder layerHeight(final double v)  { layerHeight = v;     return this; }
+        public Builder layoutRadius(final double v) { layoutRadius = v;    return this; }
+        public Builder topColor(final String v)     { topColor = v;        return this; }
+        public Builder bottomColor(final String v)  { bottomColor = v;     return this; }
 
         public RenderOptions build() { return new RenderOptions(this); }
     }

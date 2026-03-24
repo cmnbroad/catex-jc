@@ -25,7 +25,7 @@ public class GraphConverterTest {
     }
 
     @Test(dataProvider = "graphVertexCounts")
-    public void testVertexCount(String name, com.catex.core.FiniteCategory<String,String> cat, int expected) {
+    public void testVertexCount(final String name, final com.catex.core.FiniteCategory<String,String> cat, final int expected) {
         DirectedGraph<String, String> g = GraphConverter.toGraph(cat);
         assertEquals(g.getVertices().size(), expected,
                 "Vertex count mismatch for '" + name + "'");
@@ -45,7 +45,7 @@ public class GraphConverterTest {
     }
 
     @Test(dataProvider = "graphEdgeCounts")
-    public void testEdgeCount(String name, com.catex.core.FiniteCategory<String,String> cat, int expected) {
+    public void testEdgeCount(final String name, final com.catex.core.FiniteCategory<String,String> cat, final int expected) {
         DirectedGraph<String, String> g = GraphConverter.toGraph(cat);
         assertEquals(g.getEdges().size(), expected,
                 "Edge count mismatch for '" + name + "'");
@@ -65,7 +65,7 @@ public class GraphConverterTest {
     }
 
     @Test(dataProvider = "graphEdgeCountsWithIdentities")
-    public void testEdgeCountWithIdentities(String name, com.catex.core.FiniteCategory<String,String> cat, int expected) {
+    public void testEdgeCountWithIdentities(final String name, final com.catex.core.FiniteCategory<String,String> cat, final int expected) {
         DirectedGraph<String, String> g = GraphConverter.toGraph(cat, true);
         assertEquals(g.getEdges().size(), expected,
                 "Edge count (with identities) mismatch for '" + name + "'");
@@ -88,7 +88,7 @@ public class GraphConverterTest {
     }
 
     @Test(dataProvider = "hasEdgeCases")
-    public void testHasEdge(DirectedGraph<String,String> g, String u, String v, boolean expected) {
+    public void testHasEdge(final DirectedGraph<String,String> g, final String u, final String v, final boolean expected) {
         assertEquals(g.hasEdge(u, v), expected,
                 "hasEdge(" + u + "," + v + ") expected " + expected);
     }

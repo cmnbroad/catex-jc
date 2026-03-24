@@ -19,13 +19,13 @@ import java.util.Map;
 public final class HasseDiagramRenderer<E> implements Renderer<HasseDiagram<E>> {
 
     @Override
-    public String renderSvg(HasseDiagram<E> diagram, RenderOptions opts) {
+    public String renderSvg(final HasseDiagram<E> diagram, final RenderOptions opts) {
         final SvgCanvas canvas = new SvgCanvas(opts.width, opts.height, "#FAFAFA");
 
         final Map<E, Point> pos = LayeredLayout.layout(diagram, opts);
 
         // Edges (drawn before nodes so they sit underneath)
-        for (HasseDiagram.Cover<E> cover : diagram.getCovers()) {
+        for (final HasseDiagram.Cover<E> cover : diagram.getCovers()) {
             final Point src = pos.get(cover.lower());
             final Point tgt = pos.get(cover.upper());
 
@@ -38,7 +38,7 @@ public final class HasseDiagramRenderer<E> implements Renderer<HasseDiagram<E>> 
         }
 
         // Nodes
-        for (E node : diagram.getNodes()) {
+        for (final E node : diagram.getNodes()) {
             final Point p = pos.get(node);
             canvas.circle(p.x(), p.y(), opts.nodeRadius,
                           opts.nodeColor, opts.nodeStroke, opts.nodeStrokeWidth);

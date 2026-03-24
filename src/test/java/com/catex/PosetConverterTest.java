@@ -26,7 +26,7 @@ public class PosetConverterTest {
     }
 
     @Test(dataProvider = "posetElementCounts")
-    public void testElementCount(String name, FiniteCategory<String,String> cat, int expected) {
+    public void testElementCount(final String name, final FiniteCategory<String,String> cat, final int expected) {
         PartialOrder<String> pos = PosetConverter.toPoset(cat);
         assertEquals(pos.getElements().size(), expected,
                 "Element count mismatch for '" + name + "'");
@@ -51,7 +51,7 @@ public class PosetConverterTest {
     }
 
     @Test(dataProvider = "chainOrderRelations")
-    public void testChainOrderRelation(PartialOrder<String> pos, String a, String b, boolean expected) {
+    public void testChainOrderRelation(final PartialOrder<String> pos, final String a, final String b, final boolean expected) {
         assertEquals(pos.leq(a, b), expected,
                 a + " ≤ " + b + " expected " + expected);
     }
@@ -69,7 +69,7 @@ public class PosetConverterTest {
     }
 
     @Test(dataProvider = "validPosets")
-    public void testPosetValidation(String name, PartialOrder<String> pos) {
+    public void testPosetValidation(final String name, final PartialOrder<String> pos) {
         List<String> errors = pos.validate();
         assertTrue(errors.isEmpty(),
                 "Poset '" + name + "' should be valid but got: " + errors);
@@ -138,18 +138,18 @@ public class PosetConverterTest {
         PartialOrder<String> pos2   = PosetConverter.toPoset(cat2);
 
         assertEquals(pos2.getElements(), pos.getElements());
-        for (String a : pos.getElements())
-            for (String b : pos.getElements())
+        for (final String a : pos.getElements())
+            for (final String b : pos.getElements())
                 assertEquals(pos2.leq(a, b), pos.leq(a, b),
                         "Relation " + a + " ≤ " + b + " differs after round-trip");
     }
 
     // -----------------------------------------------------------------------
-    // Non-thin category throws
+    // Non-preorder category throws
     // -----------------------------------------------------------------------
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testNonThinCategoryThrows() {
+    public void testNonPreorderCategoryThrows() {
         // Build a category with two morphisms A→B
         var A    = new com.catex.core.CategoryObject<>("A");
         var B    = new com.catex.core.CategoryObject<>("B");

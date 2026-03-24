@@ -25,7 +25,7 @@ public final class Morphism<L, OL> {
     private final CategoryObject<OL> domain;
     private final CategoryObject<OL> codomain;
 
-    public Morphism(L label, CategoryObject<OL> domain, CategoryObject<OL> codomain) {
+    public Morphism(final L label, final CategoryObject<OL> domain, final CategoryObject<OL> codomain) {
         this.label    = Objects.requireNonNull(label,    "label must not be null");
         this.domain   = Objects.requireNonNull(domain,   "domain must not be null");
         this.codomain = Objects.requireNonNull(codomain, "codomain must not be null");
@@ -41,7 +41,7 @@ public final class Morphism<L, OL> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof Morphism<?, ?> that)) return false;
         return Objects.equals(label, that.label)

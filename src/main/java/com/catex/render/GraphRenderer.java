@@ -22,7 +22,7 @@ import java.util.*;
 public final class GraphRenderer<V, E> implements Renderer<DirectedGraph<V, E>> {
 
     @Override
-    public String renderSvg(DirectedGraph<V, E> graph, RenderOptions opts) {
+    public String renderSvg(final DirectedGraph<V, E> graph, final RenderOptions opts) {
         final String markerId = "arrow";
         final SvgCanvas canvas = new SvgCanvas(opts.width, opts.height, "#FAFAFA");
         canvas.addArrowMarker(markerId, opts.edgeColor, opts.arrowSize);
@@ -30,7 +30,7 @@ public final class GraphRenderer<V, E> implements Renderer<DirectedGraph<V, E>> 
         final Map<V, Point> pos = computeLayout(graph, opts);
 
         // Edges (before nodes)
-        for (DirectedGraph.Edge<V, E> edge : graph.getEdges()) {
+        for (final DirectedGraph.Edge<V, E> edge : graph.getEdges()) {
             final V src = edge.source();
             final V tgt = edge.target();
 
@@ -72,7 +72,7 @@ public final class GraphRenderer<V, E> implements Renderer<DirectedGraph<V, E>> 
         }
 
         // Nodes
-        for (V vertex : graph.getVertices()) {
+        for (final V vertex : graph.getVertices()) {
             final Point p = pos.get(vertex);
             canvas.circle(p.x(), p.y(), opts.nodeRadius,
                           opts.nodeColor, opts.nodeStroke, opts.nodeStrokeWidth);
@@ -85,13 +85,13 @@ public final class GraphRenderer<V, E> implements Renderer<DirectedGraph<V, E>> 
 
     // -------------------------------------------------------------------------
 
-    private Map<V, Point> computeLayout(DirectedGraph<V, E> graph, RenderOptions opts) {
+    private Map<V, Point> computeLayout(final DirectedGraph<V, E> graph, final RenderOptions opts) {
         // Build adjacency map
         final Map<V, List<V>> adj = new LinkedHashMap<>();
-        for (V v : graph.getVertices()) {
+        for (final V v : graph.getVertices()) {
             adj.put(v, new ArrayList<>());
         }
-        for (DirectedGraph.Edge<V, E> e : graph.getEdges()) {
+        for (final DirectedGraph.Edge<V, E> e : graph.getEdges()) {
             if (!e.source().equals(e.target())) { // skip self-loops for layout
                 adj.get(e.source()).add(e.target());
             }
@@ -102,7 +102,7 @@ public final class GraphRenderer<V, E> implements Renderer<DirectedGraph<V, E>> 
             final Map<V, Integer> rankMap = LayeredLayout.computeRanks(graph.getVertices(), adj);
             final int maxRank = rankMap.values().stream().mapToInt(Integer::intValue).max().orElse(0);
             final Map<Integer, List<V>> layers = new LinkedHashMap<>();
-            for (Map.Entry<V, Integer> e : rankMap.entrySet()) {
+            for (final Map.Entry<V, Integer> e : rankMap.entrySet()) {
                 layers.computeIfAbsent(e.getValue(), k -> new ArrayList<>()).add(e.getKey());
             }
             return LayeredLayout.layoutRanks(rankMap, layers, maxRank, opts);

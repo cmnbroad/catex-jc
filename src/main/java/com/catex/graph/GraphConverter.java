@@ -28,7 +28,7 @@ public final class GraphConverter {
     /**
      * Converts to a directed graph, omitting identity morphisms.
      */
-    public static <OL, ML> DirectedGraph<OL, ML> toGraph(FiniteCategory<OL, ML> category) {
+    public static <OL, ML> DirectedGraph<OL, ML> toGraph(final FiniteCategory<OL, ML> category) {
         return toGraph(category, false);
     }
 
@@ -38,15 +38,15 @@ public final class GraphConverter {
      * @param includeIdentities if {@code true}, identity morphisms become self-loop edges
      */
     public static <OL, ML> DirectedGraph<OL, ML> toGraph(
-            FiniteCategory<OL, ML> category, boolean includeIdentities) {
+            final FiniteCategory<OL, ML> category, final boolean includeIdentities) {
 
         final Set<OL> vertices = new LinkedHashSet<>();
-        for (CategoryObject<OL> obj : category.getObjects()) {
+        for (final CategoryObject<OL> obj : category.getObjects()) {
             vertices.add(obj.getLabel());
         }
 
         final List<DirectedGraph.Edge<OL, ML>> edges = new ArrayList<>();
-        for (Morphism<ML, OL> m : category.getMorphisms()) {
+        for (final Morphism<ML, OL> m : category.getMorphisms()) {
             if (!includeIdentities && m.isIdentity()) {
                 continue;
             }
@@ -70,18 +70,18 @@ public final class GraphConverter {
      * <p>This is a free category over the graph — non-trivial composites are not
      * computed because a bare graph carries no composition information.
      */
-    public static <V, E> FiniteCategory<V, String> fromGraph(DirectedGraph<V, E> graph) {
+    public static <V, E> FiniteCategory<V, String> fromGraph(final DirectedGraph<V, E> graph) {
         final FiniteCategory.Builder<V, String> builder = FiniteCategory.builder();
 
         // Objects and identity morphisms
-        for (V v : graph.getVertices()) {
+        for (final V v : graph.getVertices()) {
             final var obj        = new CategoryObject<>(v);
             final var idMorphism = new com.catex.core.Morphism<String, V>("id_" + v, obj, obj);
             builder.addObject(obj).addMorphism(idMorphism);
         }
 
         // Edge morphisms and unit-law compositions
-        for (DirectedGraph.Edge<V, E> edge : graph.getEdges()) {
+        for (final DirectedGraph.Edge<V, E> edge : graph.getEdges()) {
             final var src   = new CategoryObject<>(edge.source());
             final var tgt   = new CategoryObject<>(edge.target());
             final var idSrc = new com.catex.core.Morphism<String, V>("id_" + edge.source(), src, src);

@@ -27,10 +27,10 @@ public final class PartialOrder<E> {
     /** Full reflexive-transitive closure of ≤. */
     private final Map<E, Set<E>>   leq;      // leq.get(a) = { b | a ≤ b }
 
-    PartialOrder(Set<E> elements, Map<E, Set<E>> leq) {
+    PartialOrder(final Set<E> elements, final Map<E, Set<E>> leq) {
         this.elements = Collections.unmodifiableSet(new LinkedHashSet<>(elements));
         final Map<E, Set<E>> copy = new LinkedHashMap<>();
-        for (Map.Entry<E, Set<E>> e : leq.entrySet()) {
+        for (final Map.Entry<E, Set<E>> e : leq.entrySet()) {
             copy.put(e.getKey(), Collections.unmodifiableSet(new LinkedHashSet<>(e.getValue())));
         }
         this.leq = Collections.unmodifiableMap(copy);
@@ -43,20 +43,20 @@ public final class PartialOrder<E> {
     public Set<E> getElements() { return elements; }
 
     /** Returns {@code true} if a ≤ b. */
-    public boolean leq(E a, E b) {
+    public boolean leq(final E a, final E b) {
         final Set<E> above = leq.get(a);
         return above != null && above.contains(b);
     }
 
     /** Returns all elements x such that a ≤ x. */
-    public Set<E> upperSet(E a) {
+    public Set<E> upperSet(final E a) {
         return leq.getOrDefault(a, Collections.emptySet());
     }
 
     /** Returns all elements x such that x ≤ a. */
-    public Set<E> lowerSet(E a) {
+    public Set<E> lowerSet(final E a) {
         final Set<E> result = new LinkedHashSet<>();
-        for (E x : elements) {
+        for (final E x : elements) {
             if (leq(x, a)) {
                 result.add(x);
             }
@@ -67,14 +67,14 @@ public final class PartialOrder<E> {
     /** Returns the cover relations that make up the Hasse diagram. */
     public List<Cover<E>> hasseCovers() {
         final List<Cover<E>> covers = new ArrayList<>();
-        for (E a : elements) {
-            for (E b : elements) {
+        for (final E a : elements) {
+            for (final E b : elements) {
                 if (a.equals(b) || !leq(a, b)) {
                     continue;
                 }
                 // b covers a iff there is no c with a < c < b
                 boolean direct = true;
-                for (E c : elements) {
+                for (final E c : elements) {
                     if (c.equals(a) || c.equals(b)) {
                         continue;
                     }
@@ -99,13 +99,13 @@ public final class PartialOrder<E> {
         final List<String> errors = new ArrayList<>();
         final List<E> elems = new ArrayList<>(elements);
 
-        for (E a : elems) {
+        for (final E a : elems) {
             // Reflexivity
             if (!leq(a, a)) {
                 errors.add("Not reflexive: " + a + " ≤ " + a + " missing");
             }
 
-            for (E b : elems) {
+            for (final E b : elems) {
                 if (a.equals(b)) {
                     continue;
                 }
@@ -113,7 +113,7 @@ public final class PartialOrder<E> {
                     errors.add("Not antisymmetric: " + a + " ≤ " + b + " and " + b + " ≤ " + a);
                 }
 
-                for (E c : elems) {
+                for (final E c : elems) {
                     if (leq(a, b) && leq(b, c) && !leq(a, c)) {
                         errors.add("Not transitive: " + a + " ≤ " + b + ", " + b + " ≤ " + c
                                 + " but not " + a + " ≤ " + c);

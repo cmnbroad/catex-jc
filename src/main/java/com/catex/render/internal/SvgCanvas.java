@@ -20,7 +20,7 @@ public final class SvgCanvas {
     private final StringBuilder defs = new StringBuilder();
     private final StringBuilder body = new StringBuilder();
 
-    public SvgCanvas(int width, int height, String background) {
+    public SvgCanvas(final int width, final int height, final String background) {
         this.width  = width;
         this.height = height;
         if (background != null) {
@@ -40,7 +40,7 @@ public final class SvgCanvas {
      * @param color fill colour of the arrowhead polygon
      * @param size  half-length of the arrowhead in px (markerWidth = size * 1.5)
      */
-    public void addArrowMarker(String id, String color, double size) {
+    public void addArrowMarker(final String id, final String color, final double size) {
         final double w = size * 1.5;
         final double h = size;
         // refX = w so the tip aligns with the line endpoint
@@ -56,8 +56,8 @@ public final class SvgCanvas {
     // Shapes
     // -------------------------------------------------------------------------
 
-    public void circle(double cx, double cy, double r,
-                       String fill, String stroke, double strokeWidth) {
+    public void circle(final double cx, final double cy, final double r,
+                       final String fill, final String stroke, final double strokeWidth) {
         body.append(fmt(
             "<circle cx=\"%.2f\" cy=\"%.2f\" r=\"%.2f\" fill=\"%s\" "
             + "stroke=\"%s\" stroke-width=\"%.2f\"/>%n",
@@ -65,8 +65,8 @@ public final class SvgCanvas {
     }
 
     /** Straight line, optionally with a marker at the end. */
-    public void line(double x1, double y1, double x2, double y2,
-                     String stroke, double strokeWidth, String markerId) {
+    public void line(final double x1, final double y1, final double x2, final double y2,
+                     final String stroke, final double strokeWidth, final String markerId) {
         final String marker = markerId == null ? "" : fmt(" marker-end=\"url(#%s)\"", markerId);
         body.append(fmt(
             "<line x1=\"%.2f\" y1=\"%.2f\" x2=\"%.2f\" y2=\"%.2f\" "
@@ -78,9 +78,9 @@ public final class SvgCanvas {
      * Curved edge via a quadratic Bézier, optionally with a marker.
      * The control point is offset from the midpoint by ({@code cpOffX}, {@code cpOffY}).
      */
-    public void curvedLine(double x1, double y1, double x2, double y2,
-                           double cpOffX, double cpOffY,
-                           String stroke, double strokeWidth, String markerId) {
+    public void curvedLine(final double x1, final double y1, final double x2, final double y2,
+                           final double cpOffX, final double cpOffY,
+                           final String stroke, final double strokeWidth, final String markerId) {
         final double mx  = (x1 + x2) / 2 + cpOffX;
         final double my  = (y1 + y2) / 2 + cpOffY;
         final String marker = markerId == null ? "" : fmt(" marker-end=\"url(#%s)\"", markerId);
@@ -93,8 +93,8 @@ public final class SvgCanvas {
     /**
      * Self-loop drawn as a circle arc above the given node centre.
      */
-    public void selfLoop(double cx, double cy, double nodeR,
-                         String stroke, double strokeWidth, String markerId) {
+    public void selfLoop(final double cx, final double cy, final double nodeR,
+                         final String stroke, final double strokeWidth, final String markerId) {
         // Small circle centred directly above the node
         final double loopR = nodeR * 0.8;
         final double lcx   = cx;
@@ -123,8 +123,8 @@ public final class SvgCanvas {
     // Text
     // -------------------------------------------------------------------------
 
-    public void text(double x, double y, String content,
-                     int fontSize, String anchor, String fill) {
+    public void text(final double x, final double y, final String content,
+                     final int fontSize, final String anchor, final String fill) {
         body.append(fmt(
             "<text x=\"%.2f\" y=\"%.2f\" font-size=\"%d\" font-family=\"sans-serif\" "
             + "text-anchor=\"%s\" dominant-baseline=\"middle\" fill=\"%s\">%s</text>%n",
@@ -137,9 +137,9 @@ public final class SvgCanvas {
      * @param perpOffX perpendicular offset in X
      * @param perpOffY perpendicular offset in Y
      */
-    public void edgeLabel(double x1, double y1, double x2, double y2,
-                          double perpOffX, double perpOffY,
-                          String content, int fontSize, String fill) {
+    public void edgeLabel(final double x1, final double y1, final double x2, final double y2,
+                          final double perpOffX, final double perpOffY,
+                          final String content, final int fontSize, final String fill) {
         final double mx = (x1 + x2) / 2 + perpOffX;
         final double my = (y1 + y2) / 2 + perpOffY;
         // Translucent background pill for readability
@@ -173,11 +173,11 @@ public final class SvgCanvas {
 
     // -------------------------------------------------------------------------
 
-    private static String fmt(String format, Object... args) {
+    private static String fmt(final String format, final Object... args) {
         return String.format(format, args);
     }
 
-    private static String escapeXml(String s) {
+    private static String escapeXml(final String s) {
         return s.replace("&", "&amp;")
                 .replace("<", "&lt;")
                 .replace(">", "&gt;")

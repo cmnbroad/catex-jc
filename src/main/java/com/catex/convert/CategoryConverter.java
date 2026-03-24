@@ -32,7 +32,7 @@ public final class CategoryConverter<OL, ML> {
 
     private final FiniteCategory<OL, ML> category;
 
-    private CategoryConverter(FiniteCategory<OL, ML> category) {
+    private CategoryConverter(final FiniteCategory<OL, ML> category) {
         this.category = category;
     }
 
@@ -41,12 +41,12 @@ public final class CategoryConverter<OL, ML> {
     // -------------------------------------------------------------------------
 
     /** Start a conversion pipeline from an already-built category. */
-    public static <OL, ML> CategoryConverter<OL, ML> from(FiniteCategory<OL, ML> category) {
+    public static <OL, ML> CategoryConverter<OL, ML> from(final FiniteCategory<OL, ML> category) {
         return new CategoryConverter<>(category);
     }
 
     /** Start a conversion pipeline from any {@link CategorySource}. */
-    public static <OL, ML> CategoryConverter<OL, ML> from(CategorySource<OL, ML> source) {
+    public static <OL, ML> CategoryConverter<OL, ML> from(final CategorySource<OL, ML> source) {
         return new CategoryConverter<>(source.toCategory());
     }
 
@@ -60,14 +60,14 @@ public final class CategoryConverter<OL, ML> {
     }
 
     /** Convert to a directed graph with optional identity self-loops. */
-    public DirectedGraph<OL, ML> toGraph(boolean includeIdentities) {
+    public DirectedGraph<OL, ML> toGraph(final boolean includeIdentities) {
         return GraphConverter.toGraph(category, includeIdentities);
     }
 
     /**
      * Convert to a partially ordered set.
      *
-     * @throws IllegalArgumentException if the category is not thin
+     * @throws IllegalArgumentException if the category is not a preorder
      */
     public PartialOrder<OL> toPoset() {
         return PosetConverter.toPoset(category);
@@ -76,7 +76,7 @@ public final class CategoryConverter<OL, ML> {
     /**
      * Convert to a lattice.
      *
-     * @throws IllegalArgumentException if the category is not thin or not a lattice
+     * @throws IllegalArgumentException if the category is not a preorder or not a lattice
      */
     public Lattice<OL> toLattice() {
         return LatticeConverter.fromCategory(category);
@@ -85,7 +85,7 @@ public final class CategoryConverter<OL, ML> {
     /**
      * Convert to a Hasse diagram.
      *
-     * @throws IllegalArgumentException if the category is not thin
+     * @throws IllegalArgumentException if the category is not a preorder
      */
     public HasseDiagram<OL> toHasseDiagram() {
         return HasseDiagramConverter.fromCategory(category);

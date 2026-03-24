@@ -11,7 +11,7 @@ import com.catex.core.Morphism;
  * <p>Three canonical categories are provided:
  * <ol>
  *   <li>{@link #twoObjectCategory()}  — two objects A, B with a single non-identity morphism f : A→B</li>
- *   <li>{@link #chainCategory()}      — chain A ≤ B ≤ C (thin / poset)</li>
+ *   <li>{@link #chainCategory()}      — chain A ≤ B ≤ C (preorder / poset)</li>
  *   <li>{@link #diamondCategory()}    — diamond lattice ⊥ ≤ {a,b} ≤ ⊤</li>
  * </ol>
  */

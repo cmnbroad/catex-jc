@@ -26,16 +26,16 @@ import java.util.*;
 public final class CategoryRenderer<OL, ML> implements Renderer<FiniteCategory<OL, ML>> {
 
     @Override
-    public String renderSvg(FiniteCategory<OL, ML> category, RenderOptions opts) {
+    public String renderSvg(final FiniteCategory<OL, ML> category, final RenderOptions opts) {
         return renderSvg(category, opts, true);
     }
 
     /**
      * @param showIdentities if {@code false}, identity self-loops are omitted
      */
-    public String renderSvg(FiniteCategory<OL, ML> category,
-                             RenderOptions opts,
-                             boolean showIdentities) {
+    public String renderSvg(final FiniteCategory<OL, ML> category,
+                             final RenderOptions opts,
+                             final boolean showIdentities) {
 
         final String markerId = "arrow";
         final SvgCanvas canvas = new SvgCanvas(opts.width, opts.height, "#FAFAFA");
@@ -44,7 +44,7 @@ public final class CategoryRenderer<OL, ML> implements Renderer<FiniteCategory<O
         final Map<OL, Point> pos = computeLayout(category, opts);
 
         // Morphisms (drawn before objects)
-        for (Morphism<ML, OL> m : category.getMorphisms()) {
+        for (final Morphism<ML, OL> m : category.getMorphisms()) {
             final OL srcLabel = m.getDomain().getLabel();
             final OL tgtLabel = m.getCodomain().getLabel();
 
@@ -89,7 +89,7 @@ public final class CategoryRenderer<OL, ML> implements Renderer<FiniteCategory<O
         }
 
         // Objects
-        for (var obj : category.getObjects()) {
+        for (final var obj : category.getObjects()) {
             final OL label = obj.getLabel();
             final Point p  = pos.get(label);
             canvas.circle(p.x(), p.y(), opts.nodeRadius,
@@ -110,27 +110,27 @@ public final class CategoryRenderer<OL, ML> implements Renderer<FiniteCategory<O
      * @param showIdentities if {@code false}, identity self-loops are omitted
      * @throws IOException if the file cannot be written
      */
-    public void renderSvgToFile(FiniteCategory<OL, ML> category,
-                                 RenderOptions opts,
-                                 Path path,
-                                 boolean showIdentities) throws IOException {
+    public void renderSvgToFile(final FiniteCategory<OL, ML> category,
+                                 final RenderOptions opts,
+                                 final Path path,
+                                 final boolean showIdentities) throws IOException {
         Files.writeString(path, renderSvg(category, opts, showIdentities));
     }
 
     // -------------------------------------------------------------------------
 
-    private Map<OL, Point> computeLayout(FiniteCategory<OL, ML> category, RenderOptions opts) {
+    private Map<OL, Point> computeLayout(final FiniteCategory<OL, ML> category, final RenderOptions opts) {
         final Set<OL> labels = new LinkedHashSet<>();
-        for (var obj : category.getObjects()) {
+        for (final var obj : category.getObjects()) {
             labels.add(obj.getLabel());
         }
 
         // Build adjacency from non-identity morphisms
         final Map<OL, List<OL>> adj = new LinkedHashMap<>();
-        for (OL l : labels) {
+        for (final OL l : labels) {
             adj.put(l, new ArrayList<>());
         }
-        for (Morphism<ML, OL> m : category.getMorphisms()) {
+        for (final Morphism<ML, OL> m : category.getMorphisms()) {
             if (!m.isIdentity()) {
                 adj.get(m.getDomain().getLabel()).add(m.getCodomain().getLabel());
             }
@@ -140,7 +140,7 @@ public final class CategoryRenderer<OL, ML> implements Renderer<FiniteCategory<O
             final Map<OL, Integer> rankMap = LayeredLayout.computeRanks(labels, adj);
             final int maxRank = rankMap.values().stream().mapToInt(Integer::intValue).max().orElse(0);
             final Map<Integer, List<OL>> layers = new LinkedHashMap<>();
-            for (Map.Entry<OL, Integer> e : rankMap.entrySet()) {
+            for (final Map.Entry<OL, Integer> e : rankMap.entrySet()) {
                 layers.computeIfAbsent(e.getValue(), k -> new ArrayList<>()).add(e.getKey());
             }
             return LayeredLayout.layoutRanks(rankMap, layers, maxRank, opts);

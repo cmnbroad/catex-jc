@@ -32,21 +32,21 @@ public final class HasseDiagram<E> {
     private final Map<Integer, List<E>> layers;   // rank → ordered list of nodes
     private final int                maxRank;
 
-    HasseDiagram(Set<E> nodes, List<Cover<E>> covers, Map<E, Integer> rankMap) {
+    HasseDiagram(final Set<E> nodes, final List<Cover<E>> covers, final Map<E, Integer> rankMap) {
         this.nodes   = Collections.unmodifiableSet(new LinkedHashSet<>(nodes));
         this.covers  = Collections.unmodifiableList(new ArrayList<>(covers));
         this.rankMap = Collections.unmodifiableMap(new LinkedHashMap<>(rankMap));
 
         int max = 0;
         final Map<Integer, List<E>> layersMut = new LinkedHashMap<>();
-        for (Map.Entry<E, Integer> e : rankMap.entrySet()) {
+        for (final Map.Entry<E, Integer> e : rankMap.entrySet()) {
             final int r = e.getValue();
             max = Math.max(max, r);
             layersMut.computeIfAbsent(r, k -> new ArrayList<>()).add(e.getKey());
         }
         this.maxRank = max;
         final Map<Integer, List<E>> layersImmutable = new LinkedHashMap<>();
-        for (var entry : layersMut.entrySet()) {
+        for (final var entry : layersMut.entrySet()) {
             layersImmutable.put(entry.getKey(), Collections.unmodifiableList(entry.getValue()));
         }
         this.layers = Collections.unmodifiableMap(layersImmutable);
@@ -61,7 +61,7 @@ public final class HasseDiagram<E> {
     public int            maxRank()   { return maxRank; }
 
     /** The rank (layer index, 0 = bottom) of the given node. */
-    public int rank(E node) {
+    public int rank(final E node) {
         final Integer r = rankMap.get(node);
         if (r == null) {
             throw new NoSuchElementException("Node not in diagram: " + node);
@@ -73,7 +73,7 @@ public final class HasseDiagram<E> {
      * All nodes at the given rank, in insertion order.
      * Returns an empty list for ranks that have no nodes.
      */
-    public List<E> layer(int rank) {
+    public List<E> layer(final int rank) {
         return layers.getOrDefault(rank, Collections.emptyList());
     }
 
@@ -87,9 +87,9 @@ public final class HasseDiagram<E> {
     }
 
     /** Cover edges whose {@code lower} node is {@code node} (edges going up from node). */
-    public List<Cover<E>> coversAbove(E node) {
+    public List<Cover<E>> coversAbove(final E node) {
         final List<Cover<E>> result = new ArrayList<>();
-        for (Cover<E> c : covers) {
+        for (final Cover<E> c : covers) {
             if (c.lower().equals(node)) {
                 result.add(c);
             }
@@ -98,9 +98,9 @@ public final class HasseDiagram<E> {
     }
 
     /** Cover edges whose {@code upper} node is {@code node} (edges coming into node from below). */
-    public List<Cover<E>> coversBelow(E node) {
+    public List<Cover<E>> coversBelow(final E node) {
         final List<Cover<E>> result = new ArrayList<>();
-        for (Cover<E> c : covers) {
+        for (final Cover<E> c : covers) {
             if (c.upper().equals(node)) {
                 result.add(c);
             }

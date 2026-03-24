@@ -10,7 +10,7 @@ import java.util.*;
  * Converts between {@link FiniteCategory} and {@link PartialOrder}.
  *
  * <h3>Category → Poset</h3>
- * A category is a thin category (poset) when there is at most one morphism
+ * A category is a preorder when there is at most one morphism
  * between any ordered pair of objects.  Under this correspondence:
  * <ul>
  *   <li>Objects become poset elements.</li>
@@ -20,7 +20,7 @@ import java.util.*;
  * </ul>
  * If the category has multiple morphisms between the same pair of objects a
  * {@link IllegalArgumentException} is thrown because the structure is not a
- * thin category.
+ * preorder.
  *
  * <h3>Poset → Category</h3>
  * Each relation a ≤ b becomes a unique morphism {@code "a≤b"} from
@@ -36,24 +36,24 @@ public final class PosetConverter {
     // -------------------------------------------------------------------------
 
     /**
-     * Converts a thin finite category to a {@link PartialOrder}.
+     * Converts a preorder finite category to a {@link PartialOrder}.
      *
-     * @throws IllegalArgumentException if the category is not thin
+     * @throws IllegalArgumentException if the category is not a preorder
      */
-    public static <OL, ML> PartialOrder<OL> toPoset(FiniteCategory<OL, ML> category) {
-        // Verify thinness: at most one morphism per (domain, codomain) pair
+    public static <OL, ML> PartialOrder<OL> toPoset(final FiniteCategory<OL, ML> category) {
+        // Verify preorder: at most one morphism per (domain, codomain) pair
         final Map<OL, Map<OL, Integer>> counts = new LinkedHashMap<>();
-        for (Morphism<ML, OL> m : category.getMorphisms()) {
+        for (final Morphism<ML, OL> m : category.getMorphisms()) {
             final OL src = m.getDomain().getLabel();
             final OL tgt = m.getCodomain().getLabel();
             counts.computeIfAbsent(src, k -> new LinkedHashMap<>())
                   .merge(tgt, 1, Integer::sum);
         }
-        for (var outer : counts.entrySet()) {
-            for (var inner : outer.getValue().entrySet()) {
+        for (final var outer : counts.entrySet()) {
+            for (final var inner : outer.getValue().entrySet()) {
                 if (inner.getValue() > 1) {
                     throw new IllegalArgumentException(
-                            "Category is not thin: " + inner.getValue()
+                            "Category is not a preorder: " + inner.getValue()
                             + " morphisms from " + outer.getKey() + " to " + inner.getKey());
                 }
             }
@@ -63,11 +63,11 @@ public final class PosetConverter {
         final Set<OL> elements = new LinkedHashSet<>();
         final Map<OL, Set<OL>> leq = new LinkedHashMap<>();
 
-        for (CategoryObject<OL> obj : category.getObjects()) {
+        for (final CategoryObject<OL> obj : category.getObjects()) {
             elements.add(obj.getLabel());
             leq.put(obj.getLabel(), new LinkedHashSet<>());
         }
-        for (Morphism<ML, OL> m : category.getMorphisms()) {
+        for (final Morphism<ML, OL> m : category.getMorphisms()) {
             leq.get(m.getDomain().getLabel()).add(m.getCodomain().getLabel());
         }
 
@@ -79,19 +79,19 @@ public final class PosetConverter {
     // -------------------------------------------------------------------------
 
     /**
-     * Converts a {@link PartialOrder} to a thin {@link FiniteCategory}.
+     * Converts a {@link PartialOrder} to a preorder {@link FiniteCategory}.
      */
-    public static <E> FiniteCategory<E, String> fromPoset(PartialOrder<E> poset) {
+    public static <E> FiniteCategory<E, String> fromPoset(final PartialOrder<E> poset) {
         final FiniteCategory.Builder<E, String> builder = FiniteCategory.builder();
 
         // Objects
-        for (E e : poset.getElements()) {
+        for (final E e : poset.getElements()) {
             builder.addObject(new CategoryObject<>(e));
         }
 
         // Morphisms: one per relation a ≤ b
-        for (E a : poset.getElements()) {
-            for (E b : poset.upperSet(a)) {
+        for (final E a : poset.getElements()) {
+            for (final E b : poset.upperSet(a)) {
                 final String label = morphismLabel(a, b);
                 final var mAB = new Morphism<>(label, new CategoryObject<>(a), new CategoryObject<>(b));
                 builder.addMorphism(mAB);
@@ -99,9 +99,9 @@ public final class PosetConverter {
         }
 
         // Composition: if a ≤ b and b ≤ c then (b≤c) ∘ (a≤b) = (a≤c)
-        for (E a : poset.getElements()) {
-            for (E b : poset.upperSet(a)) {
-                for (E c : poset.upperSet(b)) {
+        for (final E a : poset.getElements()) {
+            for (final E b : poset.upperSet(a)) {
+                for (final E c : poset.upperSet(b)) {
                     final var mAB = new Morphism<>(morphismLabel(a, b),
                             new CategoryObject<>(a), new CategoryObject<>(b));
                     final var mBC = new Morphism<>(morphismLabel(b, c),
@@ -116,7 +116,7 @@ public final class PosetConverter {
         return builder.build();
     }
 
-    private static <E> String morphismLabel(E a, E b) {
+    private static <E> String morphismLabel(final E a, final E b) {
         return a.equals(b) ? "id_" + a : a + "≤" + b;
     }
 }

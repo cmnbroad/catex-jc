@@ -22,7 +22,7 @@ public final class DirectedGraph<V, E> {
     private final Set<V>         vertices;
     private final List<Edge<V,E>> edges;
 
-    DirectedGraph(Set<V> vertices, List<Edge<V, E>> edges) {
+    DirectedGraph(final Set<V> vertices, final List<Edge<V, E>> edges) {
         this.vertices = Collections.unmodifiableSet(new LinkedHashSet<>(vertices));
         this.edges    = Collections.unmodifiableList(new ArrayList<>(edges));
     }
@@ -31,9 +31,9 @@ public final class DirectedGraph<V, E> {
     public List<Edge<V,E>> getEdges()    { return edges; }
 
     /** All edges leaving {@code source}. */
-    public List<Edge<V,E>> edgesFrom(V source) {
+    public List<Edge<V,E>> edgesFrom(final V source) {
         final List<Edge<V,E>> result = new ArrayList<>();
-        for (Edge<V,E> e : edges) {
+        for (final Edge<V,E> e : edges) {
             if (e.source().equals(source)) {
                 result.add(e);
             }
@@ -42,9 +42,9 @@ public final class DirectedGraph<V, E> {
     }
 
     /** All edges arriving at {@code target}. */
-    public List<Edge<V,E>> edgesTo(V target) {
+    public List<Edge<V,E>> edgesTo(final V target) {
         final List<Edge<V,E>> result = new ArrayList<>();
-        for (Edge<V,E> e : edges) {
+        for (final Edge<V,E> e : edges) {
             if (e.target().equals(target)) {
                 result.add(e);
             }
@@ -53,8 +53,8 @@ public final class DirectedGraph<V, E> {
     }
 
     /** Returns {@code true} if there is at least one edge from {@code u} to {@code v}. */
-    public boolean hasEdge(V u, V v) {
-        for (Edge<V,E> e : edges) {
+    public boolean hasEdge(final V u, final V v) {
+        for (final Edge<V,E> e : edges) {
             if (e.source().equals(u) && e.target().equals(v)) {
                 return true;
             }

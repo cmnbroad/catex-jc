@@ -32,7 +32,7 @@ public class RenderTest {
     // Helpers
     // -----------------------------------------------------------------------
 
-    private static int count(String svg, String tag) {
+    private static int count(final String svg, final String tag) {
         Pattern p = Pattern.compile("<" + tag + "[\\s/>]");
         java.util.regex.Matcher m = p.matcher(svg);
         int n = 0;
@@ -40,7 +40,7 @@ public class RenderTest {
         return n;
     }
 
-    private static boolean containsText(String svg, String text) {
+    private static boolean containsText(final String svg, final String text) {
         return svg.contains(">" + text + "<") || svg.contains(">" + text + "</");
     }
 
@@ -61,8 +61,8 @@ public class RenderTest {
     }
 
     @Test(dataProvider = "hasseDiagrams")
-    public void testHasseDiagramSvgNodeCount(String name, HasseDiagram<String> hd,
-                                              int expectedNodes, int expectedEdges) {
+    public void testHasseDiagramSvgNodeCount(final String name, final HasseDiagram<String> hd,
+                                              final int expectedNodes, final int expectedEdges) {
         String svg = new HasseDiagramRenderer<String>().renderSvg(hd);
         assertNotNull(svg);
         assertTrue(svg.startsWith("<?xml"), "SVG should start with XML declaration");
@@ -72,8 +72,8 @@ public class RenderTest {
     }
 
     @Test(dataProvider = "hasseDiagrams")
-    public void testHasseDiagramSvgEdgeCount(String name, HasseDiagram<String> hd,
-                                              int expectedNodes, int expectedEdges) {
+    public void testHasseDiagramSvgEdgeCount(final String name, final HasseDiagram<String> hd,
+                                              final int expectedNodes, final int expectedEdges) {
         String svg = new HasseDiagramRenderer<String>().renderSvg(hd);
         assertEquals(count(svg, "line"), expectedEdges,
                 "Line count mismatch for '" + name + "'");
@@ -101,7 +101,7 @@ public class RenderTest {
     }
 
     @Test(dataProvider = "lattices")
-    public void testLatticeSvgNodeCount(String name, Lattice<String> lat, int expected) {
+    public void testLatticeSvgNodeCount(final String name, final Lattice<String> lat, final int expected) {
         String svg = new LatticeRenderer<String>().renderSvg(lat);
         assertNotNull(svg);
         assertTrue(svg.contains("<svg"));
@@ -143,8 +143,8 @@ public class RenderTest {
     }
 
     @Test(dataProvider = "graphs")
-    public void testGraphSvgNodeCount(String name, DirectedGraph<String,String> g,
-                                       int expectedNodes, int expectedEdges) {
+    public void testGraphSvgNodeCount(final String name, final DirectedGraph<String,String> g,
+                                       final int expectedNodes, final int expectedEdges) {
         String svg = new GraphRenderer<String,String>().renderSvg(g);
         assertNotNull(svg);
         assertTrue(svg.contains("<svg"));
@@ -153,8 +153,8 @@ public class RenderTest {
     }
 
     @Test(dataProvider = "graphs")
-    public void testGraphSvgHasArrowMarker(String name, DirectedGraph<String,String> g,
-                                            int expNodes, int expEdges) {
+    public void testGraphSvgHasArrowMarker(final String name, final DirectedGraph<String,String> g,
+                                            final int expNodes, final int expEdges) {
         String svg = new GraphRenderer<String,String>().renderSvg(g);
         assertTrue(svg.contains("<marker"), "Graph SVG should define an arrow marker");
     }
@@ -204,8 +204,8 @@ public class RenderTest {
     }
 
     @Test(dataProvider = "categories")
-    public void testCategorySvgNodeCount(String name,
-            com.catex.core.FiniteCategory<String,String> cat, int expected) {
+    public void testCategorySvgNodeCount(final String name,
+            final com.catex.core.FiniteCategory<String,String> cat, final int expected) {
         String svg = new CategoryRenderer<String,String>().renderSvg(cat);
         assertNotNull(svg);
         assertTrue(svg.contains("<svg"));
@@ -214,8 +214,8 @@ public class RenderTest {
     }
 
     @Test(dataProvider = "categories")
-    public void testCategorySvgWithIdentitiesContainsPaths(String name,
-            com.catex.core.FiniteCategory<String,String> cat, int objectCount) {
+    public void testCategorySvgWithIdentitiesContainsPaths(final String name,
+            final com.catex.core.FiniteCategory<String,String> cat, final int objectCount) {
         // With identities ON, each object should produce a self-loop <path>
         String svgWith = new CategoryRenderer<String,String>().renderSvg(cat);
         String svgWithout = new CategoryRenderer<String,String>()
@@ -281,13 +281,13 @@ public class RenderTest {
     }
 
     @Test(dataProvider = "allSvgs")
-    public void testSvgClosesRootElement(String name, String svg) {
+    public void testSvgClosesRootElement(final String name, final String svg) {
         assertTrue(svg.endsWith("</svg>"),
                 "SVG for '" + name + "' should end with </svg>");
     }
 
     @Test(dataProvider = "allSvgs")
-    public void testSvgNonEmpty(String name, String svg) {
+    public void testSvgNonEmpty(final String name, final String svg) {
         assertTrue(svg.length() > 200,
                 "SVG for '" + name + "' seems too short (" + svg.length() + " chars)");
     }

@@ -26,7 +26,7 @@ public class LatticeConverterTest {
     }
 
     @Test(dataProvider = "latticeElementCounts")
-    public void testElementCount(String name, com.catex.core.FiniteCategory<String,String> cat, int expected) {
+    public void testElementCount(final String name, final com.catex.core.FiniteCategory<String,String> cat, final int expected) {
         Lattice<String> lat = LatticeConverter.fromCategory(cat);
         assertEquals(lat.getElements().size(), expected,
                 "Element count mismatch for '" + name + "'");
@@ -45,7 +45,7 @@ public class LatticeConverterTest {
     }
 
     @Test(dataProvider = "validLattices")
-    public void testLatticeValidation(String name, Lattice<String> lat) {
+    public void testLatticeValidation(final String name, final Lattice<String> lat) {
         List<String> errors = lat.validate();
         assertTrue(errors.isEmpty(),
                 "Lattice '" + name + "' should be valid but got: " + errors);
@@ -70,7 +70,7 @@ public class LatticeConverterTest {
     }
 
     @Test(dataProvider = "diamondJoins")
-    public void testJoin(Lattice<String> lat, String a, String b, String expected) {
+    public void testJoin(final Lattice<String> lat, final String a, final String b, final String expected) {
         assertEquals(lat.join(a, b), expected,
                 "join(" + a + "," + b + ") expected " + expected);
     }
@@ -94,7 +94,7 @@ public class LatticeConverterTest {
     }
 
     @Test(dataProvider = "diamondMeets")
-    public void testMeet(Lattice<String> lat, String a, String b, String expected) {
+    public void testMeet(final Lattice<String> lat, final String a, final String b, final String expected) {
         assertEquals(lat.meet(a, b), expected,
                 "meet(" + a + "," + b + ") expected " + expected);
     }
@@ -115,7 +115,7 @@ public class LatticeConverterTest {
     }
 
     @Test(dataProvider = "chainJoins")
-    public void testChainJoin(Lattice<String> lat, String a, String b, String expected) {
+    public void testChainJoin(final Lattice<String> lat, final String a, final String b, final String expected) {
         assertEquals(lat.join(a, b), expected);
     }
 
@@ -192,8 +192,8 @@ public class LatticeConverterTest {
         Lattice<String> restored = LatticeConverter.fromCategory(cat2);
 
         assertEquals(restored.getElements(), original.getElements());
-        for (String a : original.getElements()) {
-            for (String b : original.getElements()) {
+        for (final String a : original.getElements()) {
+            for (final String b : original.getElements()) {
                 assertEquals(restored.join(a, b), original.join(a, b),
                         "Join mismatch after round-trip for (" + a + "," + b + ")");
                 assertEquals(restored.meet(a, b), original.meet(a, b),
