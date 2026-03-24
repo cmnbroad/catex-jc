@@ -1,10 +1,15 @@
 # catex-jc
 
-A Java library for working with finite categories from category theory. Define categories, validate their laws, convert them to related mathematical structures, and render them as SVG diagrams.
+Experiments with category theory.
+
+A Java library for rendering your domain-specific data structure as a (finite) category by implementing the
+CategorySource interface. Then use the category-theoretic representation to gain insights about your data and
+structures by reasoning about their properties; how they relate to mathematical structures such as graphs,
+posets, or lattices; render and visualize them as SVG diagrams.
 
 ## Features
 
-- Define finite categories with objects, morphisms, and a composition table
+- Create a finite category with objects, morphisms, and a composition table
 - Validate category laws (identity, associativity, unit laws)
 - Convert categories to graphs, partial orders, lattices, and Hasse diagrams
 - Render any structure to SVG with customizable layouts and styles
