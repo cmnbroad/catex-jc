@@ -27,7 +27,7 @@ public class FiniteCategoryTest {
 
     @Test(dataProvider = "validCategories")
     public void testValidCategoriesPassValidation(final String name, final FiniteCategory<String, String> cat) {
-        List<String> errors = cat.validate();
+        final List<String> errors = cat.validate();
         assertTrue(errors.isEmpty(),
                 "Expected no validation errors for '" + name + "' but got: " + errors);
     }
@@ -86,7 +86,7 @@ public class FiniteCategoryTest {
 
     @Test(dataProvider = "identityChecks")
     public void testIdentityPresent(final String label, final FiniteCategory<String, String> cat) {
-        var obj = new CategoryObject<>(label);
+        final var obj = new CategoryObject<>(label);
         assertTrue(cat.identityOf(obj).isPresent(), "Identity missing for object " + label);
         assertTrue(cat.identityOf(obj).get().isIdentity());
     }
@@ -97,24 +97,24 @@ public class FiniteCategoryTest {
 
     @Test
     public void testCompositionInChain() {
-        var cat = Fixtures.chainCategory();
-        var ab  = cat.getMorphisms().stream().filter(m -> m.getLabel().equals("A≤B")).findFirst().orElseThrow();
-        var bc  = cat.getMorphisms().stream().filter(m -> m.getLabel().equals("B≤C")).findFirst().orElseThrow();
-        var ac  = cat.getMorphisms().stream().filter(m -> m.getLabel().equals("A≤C")).findFirst().orElseThrow();
+        final var cat = Fixtures.chainCategory();
+        final var ab  = cat.getMorphisms().stream().filter(m -> m.getLabel().equals("A≤B")).findFirst().orElseThrow();
+        final var bc  = cat.getMorphisms().stream().filter(m -> m.getLabel().equals("B≤C")).findFirst().orElseThrow();
+        final var ac  = cat.getMorphisms().stream().filter(m -> m.getLabel().equals("A≤C")).findFirst().orElseThrow();
 
-        var composed = cat.compose(bc, ab);
+        final var composed = cat.compose(bc, ab);
         assertTrue(composed.isPresent(), "bc ∘ ab should be defined");
         assertEquals(composed.get(), ac, "bc ∘ ab should equal ac");
     }
 
     @Test
     public void testCompositionUndefinedWhenTypeMismatch() {
-        var cat = Fixtures.chainCategory();
-        var ab  = cat.getMorphisms().stream().filter(m -> m.getLabel().equals("A≤B")).findFirst().orElseThrow();
-        var bc  = cat.getMorphisms().stream().filter(m -> m.getLabel().equals("B≤C")).findFirst().orElseThrow();
+        final var cat = Fixtures.chainCategory();
+        final var ab  = cat.getMorphisms().stream().filter(m -> m.getLabel().equals("A≤B")).findFirst().orElseThrow();
+        final var bc  = cat.getMorphisms().stream().filter(m -> m.getLabel().equals("B≤C")).findFirst().orElseThrow();
 
         // ab ∘ bc is undefined (wrong order)
-        var composed = cat.compose(ab, bc);
+        final var composed = cat.compose(ab, bc);
         assertFalse(composed.isPresent(), "ab ∘ bc should not be defined");
     }
 
@@ -125,17 +125,17 @@ public class FiniteCategoryTest {
     @Test
     public void testMissingIdentityFailsValidation() {
         // Build a category with no identity on B
-        var A = new CategoryObject<>("A");
-        var B = new CategoryObject<>("B");
-        var idA = new Morphism<>("id_A", A, A);
-        var f   = new Morphism<>("f", A, B);
+        final var A = new CategoryObject<>("A");
+        final var B = new CategoryObject<>("B");
+        final var idA = new Morphism<>("id_A", A, A);
+        final var f   = new Morphism<>("f", A, B);
 
-        var cat = FiniteCategory.<String, String>builder()
+        final var cat = FiniteCategory.<String, String>builder()
                 .addObject(A).addObject(B)
                 .addMorphism(idA).addMorphism(f)
                 .build();
 
-        List<String> errors = cat.validate();
+        final List<String> errors = cat.validate();
         assertFalse(errors.isEmpty(), "Should have validation error for missing id_B");
     }
 
@@ -145,18 +145,18 @@ public class FiniteCategoryTest {
 
     @Test
     public void testMorphismsFrom() {
-        var cat = Fixtures.chainCategory();
-        var A   = new CategoryObject<>("A");
-        var from = cat.morphismsFrom(A);
+        final var cat = Fixtures.chainCategory();
+        final var A   = new CategoryObject<>("A");
+        final var from = cat.morphismsFrom(A);
         // id_A, A≤B, A≤C
         assertEquals(from.size(), 3);
     }
 
     @Test
     public void testMorphismsTo() {
-        var cat = Fixtures.chainCategory();
-        var C   = new CategoryObject<>("C");
-        var to  = cat.morphismsTo(C);
+        final var cat = Fixtures.chainCategory();
+        final var C   = new CategoryObject<>("C");
+        final var to  = cat.morphismsTo(C);
         // id_C, B≤C, A≤C
         assertEquals(to.size(), 3);
     }

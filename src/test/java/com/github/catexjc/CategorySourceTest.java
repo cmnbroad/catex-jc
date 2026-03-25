@@ -31,8 +31,8 @@ public class CategorySourceTest {
 
     @Test(dataProvider = "categorySources")
     public void testCategorySourceProducesValidCategory(final String name, final CategorySource<String,String> source) {
-        FiniteCategory<String,String> cat = source.toCategory();
-        List<String> errors = cat.validate();
+        final FiniteCategory<String,String> cat = source.toCategory();
+        final List<String> errors = cat.validate();
         assertTrue(errors.isEmpty(),
                 "Category from '" + name + "' should be valid: " + errors);
     }
@@ -43,7 +43,7 @@ public class CategorySourceTest {
 
     @Test(dataProvider = "categorySources")
     public void testConverterFromSource(final String name, final CategorySource<String,String> source) {
-        var converter = CategoryConverter.from(source);
+        final var converter = CategoryConverter.from(source);
         assertNotNull(converter.getCategory());
         assertFalse(converter.getCategory().getObjects().isEmpty(),
                 "Category from '" + name + "' should have objects");
@@ -55,7 +55,7 @@ public class CategorySourceTest {
 
     @Test
     public void testFullPipelineToGraph() {
-        var g = CategoryConverter.from(new Fixtures.ChainDomain()).toGraph();
+        final var g = CategoryConverter.from(new Fixtures.ChainDomain()).toGraph();
         assertEquals(g.getVertices().size(), 3);
         assertEquals(g.getEdges().size(), 3);  // ab, bc, ac
         assertTrue(g.hasEdge("A", "C"), "Transitive edge A→C should be present");
@@ -63,8 +63,8 @@ public class CategorySourceTest {
 
     @Test
     public void testFullPipelineToPoset() {
-        PartialOrder<String> pos = CategoryConverter.from(new Fixtures.ChainDomain()).toPoset();
-        List<String> errors = pos.validate();
+        final PartialOrder<String> pos = CategoryConverter.from(new Fixtures.ChainDomain()).toPoset();
+        final List<String> errors = pos.validate();
         assertTrue(errors.isEmpty(), "Poset from ChainDomain should be valid: " + errors);
         assertTrue(pos.leq("A", "C"));
         assertFalse(pos.leq("C", "A"));
@@ -72,7 +72,7 @@ public class CategorySourceTest {
 
     @Test
     public void testFullPipelineToLattice() {
-        Lattice<String> lat = CategoryConverter.from(new Fixtures.ChainDomain()).toLattice();
+        final Lattice<String> lat = CategoryConverter.from(new Fixtures.ChainDomain()).toLattice();
         assertEquals(lat.join("A", "B"), "B");
         assertEquals(lat.meet("B", "C"), "B");
     }
@@ -88,15 +88,16 @@ public class CategorySourceTest {
 
         @Override
         public FiniteCategory<Integer, String> toCategory() {
-            FiniteCategory.Builder<Integer, String> builder = FiniteCategory.builder();
+            final FiniteCategory.Builder<Integer, String> builder = FiniteCategory.builder();
 
-            for (final int e : ELEMS)
+            for (final int e : ELEMS) {
                 builder.addObject(new com.github.catexjc.core.CategoryObject<>(e));
+            }
 
             for (final int a : ELEMS) {
                 for (final int b : ELEMS) {
                     if (b % a == 0) { // a divides b
-                        String label = a == b ? "id_" + a : a + "|" + b;
+                        final String label = a == b ? "id_" + a : a + "|" + b;
                         builder.addMorphism(new com.github.catexjc.core.Morphism<>(
                                 label,
                                 new com.github.catexjc.core.CategoryObject<>(a),
@@ -110,9 +111,9 @@ public class CategorySourceTest {
                 for (final int b : ELEMS)
                     for (final int c : ELEMS)
                         if (b % a == 0 && c % b == 0) {
-                            String lAB = a == b ? "id_" + a : a + "|" + b;
-                            String lBC = b == c ? "id_" + b : b + "|" + c;
-                            String lAC = a == c ? "id_" + a : a + "|" + c;
+                            final String lAB = a == b ? "id_" + a : a + "|" + b;
+                            final String lBC = b == c ? "id_" + b : b + "|" + c;
+                            final String lAC = a == c ? "id_" + a : a + "|" + c;
                             builder.addComposition(
                                     new com.github.catexjc.core.Morphism<>(lBC,
                                             new com.github.catexjc.core.CategoryObject<>(b),
@@ -131,7 +132,7 @@ public class CategorySourceTest {
 
     @DataProvider(name = "divisibilityJoins")
     public Object[][] divisibilityJoins() {
-        Lattice<Integer> lat = LatticeConverter.fromCategory(new DivisibilityLattice().toCategory());
+        final Lattice<Integer> lat = LatticeConverter.fromCategory(new DivisibilityLattice().toCategory());
         return new Object[][] {
             { lat, 1, 1, 1 },
             { lat, 1, 2, 2 },
@@ -166,8 +167,8 @@ public class CategorySourceTest {
 
     @Test
     public void testDivisibilityLatticeValid() {
-        Lattice<Integer> lat = LatticeConverter.fromCategory(new DivisibilityLattice().toCategory());
-        List<String> errors = lat.validate();
+        final Lattice<Integer> lat = LatticeConverter.fromCategory(new DivisibilityLattice().toCategory());
+        final List<String> errors = lat.validate();
         assertTrue(errors.isEmpty(), "Divisibility lattice should be valid: " + errors);
     }
 }

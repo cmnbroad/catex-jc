@@ -33,7 +33,7 @@ public class RenderTest {
     // -----------------------------------------------------------------------
 
     private static int count(final String svg, final String tag) {
-        Pattern p = Pattern.compile("<" + tag + "[\\s/>]");
+        final Pattern p = Pattern.compile("<" + tag + "[\\s/>]");
         java.util.regex.Matcher m = p.matcher(svg);
         int n = 0;
         while (m.find()) n++;
@@ -63,7 +63,7 @@ public class RenderTest {
     @Test(dataProvider = "hasseDiagrams")
     public void testHasseDiagramSvgNodeCount(final String name, final HasseDiagram<String> hd,
                                               final int expectedNodes, final int expectedEdges) {
-        String svg = new HasseDiagramRenderer<String>().renderSvg(hd);
+        final String svg = new HasseDiagramRenderer<String>().renderSvg(hd);
         assertNotNull(svg);
         assertTrue(svg.startsWith("<?xml"), "SVG should start with XML declaration");
         assertTrue(svg.contains("<svg"), "Should contain <svg> element");
@@ -74,15 +74,15 @@ public class RenderTest {
     @Test(dataProvider = "hasseDiagrams")
     public void testHasseDiagramSvgEdgeCount(final String name, final HasseDiagram<String> hd,
                                               final int expectedNodes, final int expectedEdges) {
-        String svg = new HasseDiagramRenderer<String>().renderSvg(hd);
+        final String svg = new HasseDiagramRenderer<String>().renderSvg(hd);
         assertEquals(count(svg, "line"), expectedEdges,
                 "Line count mismatch for '" + name + "'");
     }
 
     @Test
     public void testHasseDiagramSvgContainsLabels() {
-        HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.chainCategory());
-        String svg = new HasseDiagramRenderer<String>().renderSvg(hd);
+        final HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.chainCategory());
+        final String svg = new HasseDiagramRenderer<String>().renderSvg(hd);
         assertTrue(svg.contains("A"), "SVG should contain node label 'A'");
         assertTrue(svg.contains("B"), "SVG should contain node label 'B'");
         assertTrue(svg.contains("C"), "SVG should contain node label 'C'");
@@ -102,20 +102,20 @@ public class RenderTest {
 
     @Test(dataProvider = "lattices")
     public void testLatticeSvgNodeCount(final String name, final Lattice<String> lat, final int expected) {
-        String svg = new LatticeRenderer<String>().renderSvg(lat);
+        final String svg = new LatticeRenderer<String>().renderSvg(lat);
         assertNotNull(svg);
         assertTrue(svg.contains("<svg"));
         // Main nodes + 2 legend circles (top/bottom)
-        int circles = count(svg, "circle");
+        final int circles = count(svg, "circle");
         assertTrue(circles >= expected,
                 "Expected at least " + expected + " circles in '" + name + "', got " + circles);
     }
 
     @Test
     public void testLatticeSvgContainsTopBottomColors() {
-        RenderOptions opts = RenderOptions.builder()
+        final RenderOptions opts = RenderOptions.builder()
                 .topColor("#FF0000").bottomColor("#00FF00").build();
-        String svg = new LatticeRenderer<String>().renderSvg(
+        final String svg = new LatticeRenderer<String>().renderSvg(
                 LatticeConverter.fromCategory(Fixtures.diamondCategory()), opts);
         assertTrue(svg.contains("#FF0000"), "Should contain top-element colour");
         assertTrue(svg.contains("#00FF00"), "Should contain bottom-element colour");
@@ -123,7 +123,7 @@ public class RenderTest {
 
     @Test
     public void testLatticeSvgLabels() {
-        String svg = new LatticeRenderer<String>().renderSvg(
+        final String svg = new LatticeRenderer<String>().renderSvg(
                 LatticeConverter.fromCategory(Fixtures.diamondCategory()));
         assertTrue(svg.contains("bot"));
         assertTrue(svg.contains("top"));
@@ -145,7 +145,7 @@ public class RenderTest {
     @Test(dataProvider = "graphs")
     public void testGraphSvgNodeCount(final String name, final DirectedGraph<String,String> g,
                                        final int expectedNodes, final int expectedEdges) {
-        String svg = new GraphRenderer<String,String>().renderSvg(g);
+        final String svg = new GraphRenderer<String,String>().renderSvg(g);
         assertNotNull(svg);
         assertTrue(svg.contains("<svg"));
         assertEquals(count(svg, "circle"), expectedNodes,
@@ -155,37 +155,37 @@ public class RenderTest {
     @Test(dataProvider = "graphs")
     public void testGraphSvgHasArrowMarker(final String name, final DirectedGraph<String,String> g,
                                             final int expNodes, final int expEdges) {
-        String svg = new GraphRenderer<String,String>().renderSvg(g);
+        final String svg = new GraphRenderer<String,String>().renderSvg(g);
         assertTrue(svg.contains("<marker"), "Graph SVG should define an arrow marker");
     }
 
     @Test
     public void testGraphSvgEdgeLabelsPresent() {
-        DirectedGraph<String,String> g = GraphConverter.toGraph(Fixtures.twoObjectCategory());
-        String svg = new GraphRenderer<String,String>().renderSvg(g);
+        final DirectedGraph<String,String> g = GraphConverter.toGraph(Fixtures.twoObjectCategory());
+        final String svg = new GraphRenderer<String,String>().renderSvg(g);
         assertTrue(svg.contains("f"), "Edge label 'f' should appear in SVG");
     }
 
     @Test
     public void testCyclicGraphUsesCircularLayout() {
         // Build a cyclic graph A→B→C→A
-        com.github.catexjc.core.CategoryObject<String> A = new com.github.catexjc.core.CategoryObject<>("A");
-        com.github.catexjc.core.CategoryObject<String> B = new com.github.catexjc.core.CategoryObject<>("B");
-        com.github.catexjc.core.CategoryObject<String> C = new com.github.catexjc.core.CategoryObject<>("C");
-        var idA = new com.github.catexjc.core.Morphism<>("id_A", A, A);
-        var idB = new com.github.catexjc.core.Morphism<>("id_B", B, B);
-        var idC = new com.github.catexjc.core.Morphism<>("id_C", C, C);
-        var ab  = new com.github.catexjc.core.Morphism<>("ab", A, B);
-        var bc  = new com.github.catexjc.core.Morphism<>("bc", B, C);
-        var ca  = new com.github.catexjc.core.Morphism<>("ca", C, A);
-        var cat = com.github.catexjc.core.FiniteCategory.<String,String>builder()
+        final com.github.catexjc.core.CategoryObject<String> A = new com.github.catexjc.core.CategoryObject<>("A");
+        final com.github.catexjc.core.CategoryObject<String> B = new com.github.catexjc.core.CategoryObject<>("B");
+        final com.github.catexjc.core.CategoryObject<String> C = new com.github.catexjc.core.CategoryObject<>("C");
+        final var idA = new com.github.catexjc.core.Morphism<>("id_A", A, A);
+        final var idB = new com.github.catexjc.core.Morphism<>("id_B", B, B);
+        final var idC = new com.github.catexjc.core.Morphism<>("id_C", C, C);
+        final var ab  = new com.github.catexjc.core.Morphism<>("ab", A, B);
+        final var bc  = new com.github.catexjc.core.Morphism<>("bc", B, C);
+        final var ca  = new com.github.catexjc.core.Morphism<>("ca", C, A);
+        final var cat = com.github.catexjc.core.FiniteCategory.<String,String>builder()
                 .addObject(A).addObject(B).addObject(C)
                 .addMorphism(idA).addMorphism(idB).addMorphism(idC)
                 .addMorphism(ab).addMorphism(bc).addMorphism(ca)
                 .build();
-        DirectedGraph<String,String> g = GraphConverter.toGraph(cat);
+        final DirectedGraph<String,String> g = GraphConverter.toGraph(cat);
         // Should not throw; circular layout used
-        String svg = new GraphRenderer<String,String>().renderSvg(g);
+        final String svg = new GraphRenderer<String,String>().renderSvg(g);
         assertNotNull(svg);
         assertEquals(count(svg, "circle"), 3);
     }
@@ -206,7 +206,7 @@ public class RenderTest {
     @Test(dataProvider = "categories")
     public void testCategorySvgNodeCount(final String name,
             final com.github.catexjc.core.FiniteCategory<String,String> cat, final int expected) {
-        String svg = new CategoryRenderer<String,String>().renderSvg(cat);
+        final String svg = new CategoryRenderer<String,String>().renderSvg(cat);
         assertNotNull(svg);
         assertTrue(svg.contains("<svg"));
         assertEquals(count(svg, "circle"), expected,
@@ -217,11 +217,11 @@ public class RenderTest {
     public void testCategorySvgWithIdentitiesContainsPaths(final String name,
             final com.github.catexjc.core.FiniteCategory<String,String> cat, final int objectCount) {
         // With identities ON, each object should produce a self-loop <path>
-        String svgWith = new CategoryRenderer<String,String>().renderSvg(cat);
-        String svgWithout = new CategoryRenderer<String,String>()
+        final String svgWith = new CategoryRenderer<String,String>().renderSvg(cat);
+        final String svgWithout = new CategoryRenderer<String,String>()
                 .renderSvg(cat, RenderOptions.defaults(), false);
-        int pathsWith    = count(svgWith, "path");
-        int pathsWithout = count(svgWithout, "path");
+        final int pathsWith    = count(svgWith, "path");
+        final int pathsWithout = count(svgWithout, "path");
         assertTrue(pathsWith >= pathsWithout,
                 "More paths expected when identities shown for '" + name + "'");
     }
@@ -232,16 +232,16 @@ public class RenderTest {
 
     @Test
     public void testCustomNodeColor() {
-        RenderOptions opts = RenderOptions.builder().nodeColor("#ABCDEF").build();
-        String svg = new HasseDiagramRenderer<String>().renderSvg(
+        final RenderOptions opts = RenderOptions.builder().nodeColor("#ABCDEF").build();
+        final String svg = new HasseDiagramRenderer<String>().renderSvg(
                 HasseDiagramConverter.fromCategory(Fixtures.chainCategory()), opts);
         assertTrue(svg.contains("#ABCDEF"), "Custom node colour should appear in SVG");
     }
 
     @Test
     public void testCustomDimensions() {
-        RenderOptions opts = RenderOptions.builder().width(400).height(300).build();
-        String svg = new HasseDiagramRenderer<String>().renderSvg(
+        final RenderOptions opts = RenderOptions.builder().width(400).height(300).build();
+        final String svg = new HasseDiagramRenderer<String>().renderSvg(
                 HasseDiagramConverter.fromCategory(Fixtures.chainCategory()), opts);
         assertTrue(svg.contains("width=\"400\""), "SVG width should be 400");
         assertTrue(svg.contains("height=\"300\""), "SVG height should be 300");
@@ -253,7 +253,7 @@ public class RenderTest {
 
     @Test
     public void testConverterToHasseDiagram() {
-        HasseDiagram<String> hd = CategoryConverter.from(Fixtures.chainCategory())
+        final HasseDiagram<String> hd = CategoryConverter.from(Fixtures.chainCategory())
                 .toHasseDiagram();
         assertNotNull(hd);
         assertEquals(hd.getNodes().size(), 3);
@@ -266,10 +266,10 @@ public class RenderTest {
 
     @DataProvider(name = "allSvgs")
     public Object[][] allSvgs() {
-        RenderOptions opts = RenderOptions.defaults();
-        HasseDiagram<String> hd  = HasseDiagramConverter.fromCategory(Fixtures.diamondCategory());
-        Lattice<String>      lat = LatticeConverter.fromCategory(Fixtures.diamondCategory());
-        DirectedGraph<String,String> g  = GraphConverter.toGraph(Fixtures.diamondCategory());
+        final RenderOptions opts = RenderOptions.defaults();
+        final HasseDiagram<String> hd  = HasseDiagramConverter.fromCategory(Fixtures.diamondCategory());
+        final Lattice<String>      lat = LatticeConverter.fromCategory(Fixtures.diamondCategory());
+        final DirectedGraph<String,String> g  = GraphConverter.toGraph(Fixtures.diamondCategory());
         com.github.catexjc.core.FiniteCategory<String,String> cat = Fixtures.diamondCategory();
 
         return new Object[][] {

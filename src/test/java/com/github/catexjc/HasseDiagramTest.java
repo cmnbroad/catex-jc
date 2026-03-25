@@ -62,7 +62,7 @@ public class HasseDiagramTest {
 
     @DataProvider(name = "chainRanks")
     public Object[][] chainRanks() {
-        HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.chainCategory());
+        final HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.chainCategory());
         return new Object[][] {
             { hd, "A", 0 },
             { hd, "B", 1 },
@@ -82,7 +82,7 @@ public class HasseDiagramTest {
 
     @DataProvider(name = "diamondRanks")
     public Object[][] diamondRanks() {
-        HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.diamondCategory());
+        final HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.diamondCategory());
         return new Object[][] {
             { hd, "bot", 0 },
             { hd, "a",   1 },
@@ -121,7 +121,7 @@ public class HasseDiagramTest {
 
     @Test
     public void testChainLayerContents() {
-        HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.chainCategory());
+        final HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.chainCategory());
         assertEquals(hd.layer(0), List.of("A"));
         assertEquals(hd.layer(1), List.of("B"));
         assertEquals(hd.layer(2), List.of("C"));
@@ -129,21 +129,21 @@ public class HasseDiagramTest {
 
     @Test
     public void testDiamondLayer0() {
-        HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.diamondCategory());
+        final HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.diamondCategory());
         assertEquals(hd.layer(0), List.of("bot"));
     }
 
     @Test
     public void testDiamondLayer1() {
-        HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.diamondCategory());
-        List<String> layer1 = hd.layer(1);
+        final HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.diamondCategory());
+        final List<String> layer1 = hd.layer(1);
         assertEquals(layer1.size(), 2);
         assertTrue(layer1.containsAll(Set.of("a", "b")));
     }
 
     @Test
     public void testDiamondLayer2() {
-        HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.diamondCategory());
+        final HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.diamondCategory());
         assertEquals(hd.layer(2), List.of("top"));
     }
 
@@ -153,8 +153,8 @@ public class HasseDiagramTest {
 
     @Test
     public void testCoversAboveBotInDiamond() {
-        HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.diamondCategory());
-        List<HasseDiagram.Cover<String>> above = hd.coversAbove("bot");
+        final HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.diamondCategory());
+        final List<HasseDiagram.Cover<String>> above = hd.coversAbove("bot");
         assertEquals(above.size(), 2, "bot should be covered by a and b");
         assertTrue(above.stream().anyMatch(c -> c.upper().equals("a")));
         assertTrue(above.stream().anyMatch(c -> c.upper().equals("b")));
@@ -162,8 +162,8 @@ public class HasseDiagramTest {
 
     @Test
     public void testCoversBelowTopInDiamond() {
-        HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.diamondCategory());
-        List<HasseDiagram.Cover<String>> below = hd.coversBelow("top");
+        final HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.diamondCategory());
+        final List<HasseDiagram.Cover<String>> below = hd.coversBelow("top");
         assertEquals(below.size(), 2, "top should be directly above a and b");
         assertTrue(below.stream().anyMatch(c -> c.lower().equals("a")));
         assertTrue(below.stream().anyMatch(c -> c.lower().equals("b")));
@@ -171,8 +171,8 @@ public class HasseDiagramTest {
 
     @Test
     public void testCoversAboveCInChain() {
-        HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.chainCategory());
-        List<HasseDiagram.Cover<String>> above = hd.coversAbove("C");
+        final HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.chainCategory());
+        final List<HasseDiagram.Cover<String>> above = hd.coversAbove("C");
         assertTrue(above.isEmpty(), "C is the top of the chain, nothing above");
     }
 
@@ -182,8 +182,8 @@ public class HasseDiagramTest {
 
     @Test
     public void testNodesByRankOrder() {
-        HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.chainCategory());
-        List<String> ordered = hd.nodesByRank();
+        final HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.chainCategory());
+        final List<String> ordered = hd.nodesByRank();
         // A(rank 0), B(rank 1), C(rank 2)
         assertEquals(ordered.indexOf("A"), 0);
         assertEquals(ordered.indexOf("B"), 1);
@@ -196,7 +196,7 @@ public class HasseDiagramTest {
 
     @Test
     public void testFromLattice() {
-        var lattice = LatticeConverter.fromCategory(Fixtures.diamondCategory());
+        final var lattice = LatticeConverter.fromCategory(Fixtures.diamondCategory());
         HasseDiagram<String> hd = HasseDiagramConverter.fromLattice(lattice);
         assertEquals(hd.getNodes().size(), 4);
         assertEquals(hd.getCovers().size(), 4);
@@ -208,8 +208,8 @@ public class HasseDiagramTest {
 
     @Test
     public void testFromPoset() {
-        PartialOrder<String> pos = PosetConverter.toPoset(Fixtures.chainCategory());
-        HasseDiagram<String> hd  = HasseDiagramConverter.fromPoset(pos);
+        final PartialOrder<String> pos = PosetConverter.toPoset(Fixtures.chainCategory());
+        final HasseDiagram<String> hd  = HasseDiagramConverter.fromPoset(pos);
         assertEquals(hd.getCovers().size(), 2); // A<B and B<C
     }
 
@@ -219,8 +219,8 @@ public class HasseDiagramTest {
 
     @Test
     public void testTransitiveRelationNotACover() {
-        HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.chainCategory());
-        boolean hasAC = hd.getCovers().stream()
+        final HasseDiagram<String> hd = HasseDiagramConverter.fromCategory(Fixtures.chainCategory());
+        final boolean hasAC = hd.getCovers().stream()
                 .anyMatch(c -> c.lower().equals("A") && c.upper().equals("C"));
         assertFalse(hasAC, "A<C is not a direct cover in the chain");
     }

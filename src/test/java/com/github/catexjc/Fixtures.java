@@ -24,11 +24,11 @@ public final class Fixtures {
     // -----------------------------------------------------------------------
 
     public static FiniteCategory<String, String> twoObjectCategory() {
-        var A   = new CategoryObject<>("A");
-        var B   = new CategoryObject<>("B");
-        var idA = new Morphism<>("id_A", A, A);
-        var idB = new Morphism<>("id_B", B, B);
-        var f   = new Morphism<>("f", A, B);
+        final var A   = new CategoryObject<>("A");
+        final var B   = new CategoryObject<>("B");
+        final var idA = new Morphism<>("id_A", A, A);
+        final  var idB = new Morphism<>("id_B", B, B);
+        final var f   = new Morphism<>("f", A, B);
 
         return FiniteCategory.<String, String>builder()
                 .addObject(A).addObject(B)
@@ -45,15 +45,15 @@ public final class Fixtures {
     // -----------------------------------------------------------------------
 
     public static FiniteCategory<String, String> chainCategory() {
-        var A   = new CategoryObject<>("A");
-        var B   = new CategoryObject<>("B");
-        var C   = new CategoryObject<>("C");
-        var idA = new Morphism<>("id_A", A, A);
-        var idB = new Morphism<>("id_B", B, B);
-        var idC = new Morphism<>("id_C", C, C);
-        var ab  = new Morphism<>("A≤B", A, B);
-        var bc  = new Morphism<>("B≤C", B, C);
-        var ac  = new Morphism<>("A≤C", A, C);
+        final var A   = new CategoryObject<>("A");
+        final var B   = new CategoryObject<>("B");
+        final var C   = new CategoryObject<>("C");
+        final var idA = new Morphism<>("id_A", A, A);
+        final var idB = new Morphism<>("id_B", B, B);
+        final var idC = new Morphism<>("id_C", C, C);
+        final var ab  = new Morphism<>("A≤B", A, B);
+        final var bc  = new Morphism<>("B≤C", B, C);
+        final var ac  = new Morphism<>("A≤C", A, C);
 
         return FiniteCategory.<String, String>builder()
                 .addObject(A).addObject(B).addObject(C)
@@ -77,21 +77,21 @@ public final class Fixtures {
     // -----------------------------------------------------------------------
 
     public static FiniteCategory<String, String> diamondCategory() {
-        var bot  = new CategoryObject<>("bot");
-        var a    = new CategoryObject<>("a");
-        var b    = new CategoryObject<>("b");
-        var top  = new CategoryObject<>("top");
+        final var bot  = new CategoryObject<>("bot");
+        final var a    = new CategoryObject<>("a");
+        final var b    = new CategoryObject<>("b");
+        final var top  = new CategoryObject<>("top");
 
-        var idBot = new Morphism<>("id_bot", bot, bot);
-        var idA   = new Morphism<>("id_a",   a,   a);
-        var idB   = new Morphism<>("id_b",   b,   b);
-        var idTop = new Morphism<>("id_top", top, top);
+        final var idBot = new Morphism<>("id_bot", bot, bot);
+        final var idA   = new Morphism<>("id_a",   a,   a);
+        final var idB   = new Morphism<>("id_b",   b,   b);
+        final var idTop = new Morphism<>("id_top", top, top);
 
-        var botA  = new Morphism<>("bot≤a",  bot, a);
-        var botB  = new Morphism<>("bot≤b",  bot, b);
-        var aTop  = new Morphism<>("a≤top",  a,   top);
-        var bTop  = new Morphism<>("b≤top",  b,   top);
-        var botTop= new Morphism<>("bot≤top",bot, top);
+        final var botA  = new Morphism<>("bot≤a",  bot, a);
+        final var botB  = new Morphism<>("bot≤b",  bot, b);
+        final var aTop  = new Morphism<>("a≤top",  a,   top);
+        final var bTop  = new Morphism<>("b≤top",  b,   top);
+        final var botTop= new Morphism<>("bot≤top",bot, top);
 
         return FiniteCategory.<String, String>builder()
                 .addObject(bot).addObject(a).addObject(b).addObject(top)

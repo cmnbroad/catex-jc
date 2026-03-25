@@ -2,10 +2,12 @@
 
 Experiments with category theory.
 
-A Java library for rendering your domain-specific data structure as a (finite) category by implementing the
-CategorySource interface. Then use the category-theoretic representation to gain insights about your data and
-structures by reasoning about their properties; how they relate to mathematical structures such as graphs,
-posets, or lattices; render and visualize them as SVG diagrams.
+A Java library for experimenting with category-theoretic concepts in software modeling.
+Supports representation of a domain-specific data structure as a (finite) category via user
+implementation of the CategorySource interface. The category-theoretic representation can then
+be used to reason and gain insight about the underlying data structure and it's properties;
+how it might relate to mathematical structures such as graphs, posets, or lattices; and to render
+and visualize the data as SVG diagrams.
 
 ## Features
 

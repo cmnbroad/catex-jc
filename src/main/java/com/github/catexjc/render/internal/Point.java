@@ -10,8 +10,8 @@ public record Point(double x, double y) {
 
     /** Euclidean distance to {@code other}. */
     public double distanceTo(final Point other) {
-        double dx = other.x - x;
-        double dy = other.y - y;
+        final double dx = other.x - x;
+        final double dy = other.y - y;
         return Math.sqrt(dx * dx + dy * dy);
     }
 
@@ -20,8 +20,10 @@ public record Point(double x, double y) {
      * with radius {@code r} that lies in the direction of {@code target}.
      */
     public Point edgeToward(final Point target, final double r) {
-        double d = distanceTo(target);
-        if (d < 1e-9) return this;
+        final double d = distanceTo(target);
+        if (d < 1e-9) {
+            return this;
+        }
         return new Point(x + r * (target.x - x) / d,
                          y + r * (target.y - y) / d);
     }
@@ -31,10 +33,12 @@ public record Point(double x, double y) {
      * {@code scale}.  Used for positioning edge labels.
      */
     public Point perpendicular(final Point target, final double scale) {
-        double d  = distanceTo(target);
-        if (d < 1e-9) return new Point(scale, 0);
-        double dx = (target.x - x) / d;
-        double dy = (target.y - y) / d;
+        final double d  = distanceTo(target);
+        if (d < 1e-9) {
+            return new Point(scale, 0);
+        }
+        final double dx = (target.x - x) / d;
+        final double dy = (target.y - y) / d;
         return new Point(-dy * scale, dx * scale);
     }
 }

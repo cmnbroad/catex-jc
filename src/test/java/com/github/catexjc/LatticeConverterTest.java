@@ -27,7 +27,7 @@ public class LatticeConverterTest {
 
     @Test(dataProvider = "latticeElementCounts")
     public void testElementCount(final String name, final com.github.catexjc.core.FiniteCategory<String,String> cat, final int expected) {
-        Lattice<String> lat = LatticeConverter.fromCategory(cat);
+        final Lattice<String> lat = LatticeConverter.fromCategory(cat);
         assertEquals(lat.getElements().size(), expected,
                 "Element count mismatch for '" + name + "'");
     }
@@ -46,7 +46,7 @@ public class LatticeConverterTest {
 
     @Test(dataProvider = "validLattices")
     public void testLatticeValidation(final String name, final Lattice<String> lat) {
-        List<String> errors = lat.validate();
+        final List<String> errors = lat.validate();
         assertTrue(errors.isEmpty(),
                 "Lattice '" + name + "' should be valid but got: " + errors);
     }
@@ -57,7 +57,7 @@ public class LatticeConverterTest {
 
     @DataProvider(name = "diamondJoins")
     public Object[][] diamondJoins() {
-        Lattice<String> lat = LatticeConverter.fromCategory(Fixtures.diamondCategory());
+        final Lattice<String> lat = LatticeConverter.fromCategory(Fixtures.diamondCategory());
         return new Object[][] {
             { lat, "bot", "bot", "bot"  },
             { lat, "bot", "a",   "a"    },
@@ -81,7 +81,7 @@ public class LatticeConverterTest {
 
     @DataProvider(name = "diamondMeets")
     public Object[][] diamondMeets() {
-        Lattice<String> lat = LatticeConverter.fromCategory(Fixtures.diamondCategory());
+        final Lattice<String> lat = LatticeConverter.fromCategory(Fixtures.diamondCategory());
         return new Object[][] {
             { lat, "top", "top", "top"  },
             { lat, "top", "a",   "a"    },
@@ -105,7 +105,7 @@ public class LatticeConverterTest {
 
     @DataProvider(name = "chainJoins")
     public Object[][] chainJoins() {
-        Lattice<String> lat = LatticeConverter.fromCategory(Fixtures.chainCategory());
+        final Lattice<String> lat = LatticeConverter.fromCategory(Fixtures.chainCategory());
         return new Object[][] {
             { lat, "A", "A", "A" },
             { lat, "A", "B", "B" },
@@ -125,28 +125,28 @@ public class LatticeConverterTest {
 
     @Test
     public void testDiamondTop() {
-        Lattice<String> lat = LatticeConverter.fromCategory(Fixtures.diamondCategory());
+        final Lattice<String> lat = LatticeConverter.fromCategory(Fixtures.diamondCategory());
         assertTrue(lat.top().isPresent());
         assertEquals(lat.top().get(), "top");
     }
 
     @Test
     public void testDiamondBottom() {
-        Lattice<String> lat = LatticeConverter.fromCategory(Fixtures.diamondCategory());
+        final Lattice<String> lat = LatticeConverter.fromCategory(Fixtures.diamondCategory());
         assertTrue(lat.bottom().isPresent());
         assertEquals(lat.bottom().get(), "bot");
     }
 
     @Test
     public void testChainTop() {
-        Lattice<String> lat = LatticeConverter.fromCategory(Fixtures.chainCategory());
+        final Lattice<String> lat = LatticeConverter.fromCategory(Fixtures.chainCategory());
         assertTrue(lat.top().isPresent());
         assertEquals(lat.top().get(), "C");
     }
 
     @Test
     public void testChainBottom() {
-        Lattice<String> lat = LatticeConverter.fromCategory(Fixtures.chainCategory());
+        final Lattice<String> lat = LatticeConverter.fromCategory(Fixtures.chainCategory());
         assertTrue(lat.bottom().isPresent());
         assertEquals(lat.bottom().get(), "A");
     }
@@ -163,15 +163,15 @@ public class LatticeConverterTest {
         // where some pair has no join.
         // Use: elements {a, b} with no ordering between them (antichain of size 2),
         // no common upper bound.
-        PartialOrder<String> antichain = PosetConverter.toPoset(
+        final PartialOrder<String> antichain = PosetConverter.toPoset(
                 Fixtures.twoObjectCategory()); // A→B is not symmetric, A≤B but B≰A — this IS a lattice
         // Instead build a proper antichain manually via fromPoset
         // Two elements with only reflexivity — no join for (a,b) because no upper bound
-        var a = new com.github.catexjc.core.CategoryObject<>("a");
-        var b = new com.github.catexjc.core.CategoryObject<>("b");
-        var idA = new com.github.catexjc.core.Morphism<>("id_a", a, a);
-        var idB = new com.github.catexjc.core.Morphism<>("id_b", b, b);
-        var cat = com.github.catexjc.core.FiniteCategory.<String,String>builder()
+        final var a = new com.github.catexjc.core.CategoryObject<>("a");
+        final var b = new com.github.catexjc.core.CategoryObject<>("b");
+        final var idA = new com.github.catexjc.core.Morphism<>("id_a", a, a);
+        final var idB = new com.github.catexjc.core.Morphism<>("id_b", b, b);
+        final var cat = com.github.catexjc.core.FiniteCategory.<String,String>builder()
                 .addObject(a).addObject(b)
                 .addMorphism(idA).addMorphism(idB)
                 .addComposition(idA, idA, idA)
@@ -187,9 +187,9 @@ public class LatticeConverterTest {
 
     @Test
     public void testRoundTripLatticeToCategory() {
-        Lattice<String> original = LatticeConverter.fromCategory(Fixtures.diamondCategory());
-        var cat2 = LatticeConverter.toCategory(original);
-        Lattice<String> restored = LatticeConverter.fromCategory(cat2);
+        final Lattice<String> original = LatticeConverter.fromCategory(Fixtures.diamondCategory());
+        final var cat2 = LatticeConverter.toCategory(original);
+        final Lattice<String> restored = LatticeConverter.fromCategory(cat2);
 
         assertEquals(restored.getElements(), original.getElements());
         for (final String a : original.getElements()) {
