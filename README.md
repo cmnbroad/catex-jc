@@ -21,6 +21,12 @@ and visualize the data as SVG diagrams.
 - Java 17+
 - Gradle (provided via wrapper)
 
+## Dependencies
+
+| Library | Version | License | Purpose |
+|---|---|---|---|
+| [JGraphT](https://jgrapht.org) | 1.5.2 | LGPL 2.1 / EPL 2.0 | Directed graph implementation |
+
 ## Building
 
 ```bash

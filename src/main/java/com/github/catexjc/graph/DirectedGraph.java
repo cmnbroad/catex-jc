@@ -1,6 +1,9 @@
 package com.github.catexjc.graph;
 
+import org.jgrapht.graph.DirectedPseudograph;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A simple directed (multi-)graph whose vertices and edges carry labels.
@@ -19,51 +22,59 @@ public final class DirectedGraph<V, E> {
         }
     }
 
-    private final Set<V>         vertices;
-    private final List<Edge<V,E>> edges;
-
-    DirectedGraph(final Set<V> vertices, final List<Edge<V, E>> edges) {
-        this.vertices = Collections.unmodifiableSet(new LinkedHashSet<>(vertices));
-        this.edges    = Collections.unmodifiableList(new ArrayList<>(edges));
+    /**
+     * Identity-equality wrapper so JGraphT treats every inserted edge as a
+     * distinct object.  {@code Edge<V,E>} is a record whose {@code equals} and
+     * {@code hashCode} are derived from its components; without this wrapper,
+     * two edges that share the same {@code (label, source, target)} triple
+     * would collide in JGraphT's internal edge map.
+     */
+    private static final class EdgeHolder<V, E> {
+        final Edge<V, E> edge;
+        EdgeHolder(final Edge<V, E> edge) { this.edge = edge; }
     }
 
-    public Set<V>          getVertices() { return vertices; }
-    public List<Edge<V,E>> getEdges()    { return edges; }
+    private final DirectedPseudograph<V, EdgeHolder<V, E>> graph;
+
+    DirectedGraph(final Set<V> vertices, final List<Edge<V, E>> edges) {
+        // null suppliers are valid when edges are added manually via addEdge(u,v,edgeObj)
+        this.graph = new DirectedPseudograph<>(null, null, false);
+        for (final V v : vertices)       graph.addVertex(v);
+        for (final Edge<V, E> e : edges) graph.addEdge(e.source(), e.target(), new EdgeHolder<>(e));
+    }
+
+    public Set<V> getVertices() {
+        return Collections.unmodifiableSet(graph.vertexSet());
+    }
+
+    public List<Edge<V, E>> getEdges() {
+        return graph.edgeSet().stream()
+                .map(h -> h.edge)
+                .collect(Collectors.toUnmodifiableList());
+    }
 
     /** All edges leaving {@code source}. */
-    public List<Edge<V,E>> edgesFrom(final V source) {
-        final List<Edge<V,E>> result = new ArrayList<>();
-        for (final Edge<V,E> e : edges) {
-            if (e.source().equals(source)) {
-                result.add(e);
-            }
-        }
-        return Collections.unmodifiableList(result);
+    public List<Edge<V, E>> edgesFrom(final V source) {
+        return graph.outgoingEdgesOf(source).stream()
+                .map(h -> h.edge)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     /** All edges arriving at {@code target}. */
-    public List<Edge<V,E>> edgesTo(final V target) {
-        final List<Edge<V,E>> result = new ArrayList<>();
-        for (final Edge<V,E> e : edges) {
-            if (e.target().equals(target)) {
-                result.add(e);
-            }
-        }
-        return Collections.unmodifiableList(result);
+    public List<Edge<V, E>> edgesTo(final V target) {
+        return graph.incomingEdgesOf(target).stream()
+                .map(h -> h.edge)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     /** Returns {@code true} if there is at least one edge from {@code u} to {@code v}. */
     public boolean hasEdge(final V u, final V v) {
-        for (final Edge<V,E> e : edges) {
-            if (e.source().equals(u) && e.target().equals(v)) {
-                return true;
-            }
-        }
-        return false;
+        return graph.containsEdge(u, v);
     }
 
     @Override
     public String toString() {
-        return "DirectedGraph{vertices=" + vertices.size() + ", edges=" + edges.size() + "}";
+        return "DirectedGraph{vertices=" + graph.vertexSet().size()
+                + ", edges=" + graph.edgeSet().size() + "}";
     }
 }
