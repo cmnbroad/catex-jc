@@ -1,3 +1,4 @@
+// Copyright 2026 Christopher Norman
 package com.github.catexjc.graph;
 
 import org.jgrapht.graph.DirectedPseudograph;

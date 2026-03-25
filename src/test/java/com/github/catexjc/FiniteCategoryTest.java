@@ -1,3 +1,4 @@
+// Copyright 2026 Christopher Norman
 package com.github.catexjc;
 
 import com.github.catexjc.core.CategoryObject;

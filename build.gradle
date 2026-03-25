@@ -1,3 +1,4 @@
+// Copyright 2026 Christopher Norman
 plugins {
     id 'java-library'
 }

@@ -1,3 +1,4 @@
+// Copyright 2026 Christopher Norman
 package com.github.catexjc.convert;
 
 import com.github.catexjc.core.CategorySource;

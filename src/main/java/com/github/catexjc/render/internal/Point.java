@@ -1,3 +1,4 @@
+// Copyright 2026 Christopher Norman
 package com.github.catexjc.render.internal;
 
 /** A 2-D point in SVG coordinate space. */
